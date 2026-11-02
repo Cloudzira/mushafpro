@@ -3,7 +3,7 @@
      Dengan begitu pembaruan kode selalu langsung terpakai (tidak ada versi lama yang "menempel").
    • Data halaman, font, terjemahan: cache-first (tidak berubah) → bisa dibaca luring setelah dibuka sekali
    • Audio (everyayah.com) & Firebase: tidak disentuh */
-const VERSION = "v6";
+const VERSION = "v7";
 const SHELL_CACHE = "mushaf-shell-" + VERSION;
 const DATA_CACHE = "mushaf-data-" + VERSION;
 const SHELL = ["./", "index.html", "style.css", "app.js", "manifest.webmanifest", "icon.svg"];
@@ -13,7 +13,8 @@ const DATA_HOSTS = [
   "cdn.jsdelivr.net",
   "api.quran.com",
   "fonts.googleapis.com",
-  "fonts.gstatic.com"
+  "fonts.gstatic.com",
+  "cdnjs.cloudflare.com"
 ];
 
 self.addEventListener("install", e => {

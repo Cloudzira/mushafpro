@@ -90,13 +90,13 @@
   <nav class="toolbar" aria-label="Kontrol mushaf">
     <div class="seg" id="modeGroup" role="radiogroup" aria-label="Mode hafalan">
         <button type="button" role="radio" data-mode="normal" aria-checked="true" title="Mode Normal (1)">
-        <svg class="ik" aria-hidden="true"><use href="#i-book"/></svg><span class="sr">Normal</span>
+        <svg class="ik" aria-hidden="true"><use href="#i-book"/></svg><span class="lbl">Normal</span>
       </button>
       <button type="button" role="radio" data-mode="blur" aria-checked="false" title="Tutup semua kata (2)">
-        <svg class="ik" aria-hidden="true"><use href="#i-eye-off"/></svg><span class="sr">Tutup</span>
+        <svg class="ik" aria-hidden="true"><use href="#i-eye-off"/></svg><span class="lbl">Tutup</span>
       </button>
       <button type="button" role="radio" data-mode="first" aria-checked="false" title="Hanya kata pertama tiap ayat (3)">
-        <svg class="ik" aria-hidden="true"><use href="#i-type"/></svg><span class="sr">Kata awal</span>
+        <svg class="ik" aria-hidden="true"><use href="#i-type"/></svg><span class="lbl">Kata awal</span>
       </button>
     </div>
 
@@ -106,17 +106,17 @@
     </button>
 
     <div class="aksi">
-      <button id="btnMoreActions" class="icon-btn" type="button" aria-expanded="false" aria-controls="actionItems" aria-label="Aksi halaman" title="Aksi halaman">
+      <button id="btnBookmark" class="icon-btn" type="button" aria-pressed="false" title="Simpan penanda halaman (B)"><svg class="ik" aria-hidden="true"><use href="#i-bookmark"/></svg><span class="sr">Penanda halaman ini</span></button>
+      <button id="btnMemo" class="icon-btn" type="button" aria-pressed="false" title="Tandai halaman ini sudah hafal (M)"><svg class="ik" aria-hidden="true"><use href="#i-check"/></svg><span class="sr">Tandai hafal</span></button>
+      <button id="btnMoreActions" class="icon-btn" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="actionItems" aria-label="Menu lainnya" title="Menu lainnya">
         <svg class="ik" aria-hidden="true"><use href="#i-more"/></svg>
       </button>
-      <div id="actionItems" class="aksi-items" role="group" aria-label="Aksi halaman" hidden>
-      <button id="btnBookmark" class="icon-btn" type="button" aria-pressed="false" title="Simpan penanda halaman (B)"><svg class="ik" aria-hidden="true"><use href="#i-bookmark"/></svg><span class="sr">Penanda</span></button>
-      <button id="btnBookmarks" class="icon-btn" type="button" title="Daftar penanda"><svg class="ik" aria-hidden="true"><use href="#i-list"/></svg><span class="sr">Daftar penanda</span></button>
-      <button id="btnMemo" class="icon-btn" type="button" aria-pressed="false" title="Tandai halaman ini sudah hafal (M)"><svg class="ik" aria-hidden="true"><use href="#i-check"/></svg><span class="sr">Tandai hafal</span></button>
-      <button id="btnProgress" class="icon-btn" type="button" title="Progres hafalan"><svg class="ik" aria-hidden="true"><use href="#i-chart"/></svg><span class="sr">Progres hafalan</span></button>
-      <button id="btnInstall" class="icon-btn" type="button" aria-label="Instal aplikasi" title="Instal aplikasi"><svg class="ik" aria-hidden="true"><use href="#i-download"/></svg><span class="sr">Instal aplikasi</span></button>
-      <button id="btnTheme" class="icon-btn" type="button" title="Ganti tema"><svg class="ik" aria-hidden="true"><use id="themeIcon" href="#i-moon"/></svg><span class="sr">Ganti tema</span></button>
-      <button id="btnSettings" class="icon-btn" type="button" title="Pengaturan"><svg class="ik" aria-hidden="true"><use href="#i-sliders"/></svg><span class="sr">Pengaturan</span></button>
+      <div id="actionItems" class="menu" role="group" aria-label="Menu lainnya" hidden>
+        <button id="btnBookmarks" class="menu-item" type="button"><svg class="ik" aria-hidden="true"><use href="#i-list"/></svg><span>Daftar penanda</span></button>
+        <button id="btnProgress" class="menu-item" type="button"><svg class="ik" aria-hidden="true"><use href="#i-chart"/></svg><span>Progres hafalan</span></button>
+        <button id="btnTheme" class="menu-item" type="button" title="Ketuk untuk mengganti tema"><svg class="ik" aria-hidden="true"><use id="themeIcon" href="#i-moon"/></svg><span>Tema</span><small id="themeLabel" class="menu-val"></small></button>
+        <button id="btnSettings" class="menu-item" type="button"><svg class="ik" aria-hidden="true"><use href="#i-sliders"/></svg><span>Pengaturan</span></button>
+        <button id="btnInstall" class="menu-item" type="button"><svg class="ik" aria-hidden="true"><use href="#i-download"/></svg><span>Pasang aplikasi</span></button>
       </div>
     </div>
   </nav>
@@ -135,10 +135,16 @@
       <div id="teks" lang="ar" dir="rtl"></div>
       <div id="kaki"><span id="kNo"></span></div>
     </section>
+
+    <nav class="pager" aria-label="Pindah halaman">
+      <button id="pgNext" class="pg-btn" type="button" title="Halaman berikutnya (←)"><svg class="ik" aria-hidden="true"><use href="#i-left"/></svg><span>Berikutnya</span></button>
+      <button id="pgJump" class="pg-info" type="button" title="Buka navigasi surat, juz, dan ayat (/)">Halaman <b id="pgNo">1</b> <span>dari 604</span></button>
+      <button id="pgPrev" class="pg-btn" type="button" title="Halaman sebelumnya (→)"><span>Sebelumnya</span><svg class="ik" aria-hidden="true"><use href="#i-right"/></svg></button>
+    </nav>
   </main>
 
   <footer class="site-footer">
-    <p>Crafted with <span class="heart">♥</span> by <span class="creator">Kurniapedia</span> 2026</p>
+    <p>Crafted with <span class="heart">♥</span> by <a class="creator" href="https://kurniapedia.my.id" target="_blank" rel="noopener noreferrer">Kurniapedia</a> 2026</p>
   </footer>
 
   <dialog id="dlgAbout" class="modal" aria-labelledby="aboutTitle">
@@ -172,7 +178,7 @@
           <div class="about-social" aria-label="Media sosial Kurniapedia">
             <a href="https://instagram.com/kurniapedia" target="_blank" rel="noopener noreferrer" aria-label="Instagram Kurniapedia" title="Instagram"><i class="fa-brands fa-instagram" aria-hidden="true"></i></a>
             <a href="https://tiktok.com/@kurniapedia" target="_blank" rel="noopener noreferrer" aria-label="TikTok Kurniapedia" title="TikTok"><i class="fa-brands fa-tiktok" aria-hidden="true"></i></a>
-            <a href="https://www.youtube.com/@kurniapedia" target="_blank" rel="noopener noreferrer" aria-label="YouTube Kurniapedia" title="YouTube"><i class="fa-brands fa-youtube" aria-hidden="true"></i></a>
+            <a href="https://kurniapedia.my.id" target="_blank" rel="noopener noreferrer" aria-label="Website Kurniapedia (kurniapedia.my.id)" title="kurniapedia.my.id"><i class="fa-solid fa-globe" aria-hidden="true"></i></a>
             <a href="https://wa.me/+6285870906050" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp Kurniapedia" title="WhatsApp"><i class="fa-brands fa-whatsapp" aria-hidden="true"></i></a>
           </div>
         </section>

@@ -206,9 +206,9 @@ svg.ik.f { fill: currentColor; }
 }
 .seg { padding: 3px; gap: 2px; }
 .seg button {
-  width: 34px; height: 32px; padding: 0; display: inline-grid; place-items: center;
+  height: 32px; padding: 0 12px; display: inline-flex; align-items: center; justify-content: center; gap: 6px;
   border: 0; background: transparent; border-radius: 999px;
-  color: var(--teks-lembut); transition: all .15s;
+  color: var(--teks-lembut); font-size: .76rem; font-weight: 600; white-space: nowrap; transition: all .15s;
 }
 .seg button .ik { width: 15px; height: 15px; }
 .seg button:hover { background: var(--kaca-halus); }
@@ -223,13 +223,22 @@ svg.ik.f { fill: currentColor; }
 
 
 .aksi { position: relative; padding: 3px; gap: 2px; }
-.aksi-items {
+.menu {
   position: absolute; top: calc(100% + 8px); right: 0; z-index: 850;
-  display: flex; align-items: center; gap: 2px; padding: 4px;
-  background: var(--kaca); border: 1px solid var(--tepi-aksen); border-radius: 999px;
-  box-shadow: var(--bayang); backdrop-filter: blur(16px);
+  display: flex; flex-direction: column; gap: 2px; min-width: 220px; padding: 6px;
+  background: var(--modal-bg); border: 1px solid var(--tepi-aksen); border-radius: 14px;
+  box-shadow: var(--bayang);
   animation: muncul .14s ease;
 }
+.menu-item {
+  display: flex; align-items: center; gap: 12px; width: 100%; padding: 10px 12px;
+  border: 0; border-radius: 10px; background: transparent; color: var(--teks);
+  font-size: .82rem; font-weight: 500; text-align: left; transition: background .15s, color .15s;
+}
+.menu-item:hover { background: var(--kaca-halus); color: var(--aksen); }
+.menu-item .ik { color: var(--teks-lembut); }
+.menu-item:hover .ik { color: var(--aksen); }
+.menu-val { margin-left: auto; font-size: .72rem; font-weight: 600; color: var(--redup); }
 .icon-btn {
   width: 34px; height: 34px; display: inline-grid; place-items: center; padding: 0;
   border: 1px solid transparent; border-radius: 50%; background: transparent; color: var(--teks-lembut);
@@ -334,10 +343,29 @@ html[data-theme="sepia"] .frame::before { inset: 10px; border-color: rgba(91, 82
   padding: 9px 18px; border-radius: 999px; font-size: .8rem; font-weight: 600;
 }
 
+/* ------------------------------------------------------------ pager halaman */
+.pager {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  max-width: var(--w); margin: 12px auto 0; padding: 0 4px;
+}
+.pg-btn, .pg-info {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 40px;
+  border: 1px solid var(--tepi); border-radius: 999px; background: var(--kaca); color: var(--teks-lembut);
+  font-size: .78rem; font-weight: 600; backdrop-filter: blur(16px); box-shadow: 0 4px 16px rgba(0, 0, 0, .04);
+  transition: border-color .15s, color .15s, opacity .15s;
+}
+.pg-btn { padding: 0 16px; min-width: 120px; }
+.pg-info { flex: 1; max-width: 220px; padding: 0 14px; }
+.pg-info b { color: var(--aksen); font-variant-numeric: tabular-nums; }
+.pg-info span { color: var(--redup); font-weight: 500; }
+.pg-btn:hover:not(:disabled), .pg-info:hover { border-color: var(--aksen); color: var(--aksen); }
+.pg-btn:disabled { opacity: .4; }
+
 .site-footer { padding: 8px 12px 16px; text-align: center; font: 11px sans-serif; color: var(--footer-muted); }
 .site-footer p { margin: 0; }
 .site-footer .heart { color: var(--footer-heart); }
-.site-footer .creator { color: var(--footer-author); font-weight: 600; text-shadow: 0 0 8px var(--footer-glow); }
+.site-footer .creator { color: var(--footer-author); font-weight: 600; text-shadow: 0 0 8px var(--footer-glow); text-decoration: none; }
+.site-footer .creator:hover { text-decoration: underline; }
 
 .about-intro { margin: 0 0 16px; font-size: .86rem; line-height: 1.6; color: var(--teks); }
 .about-section { padding: 0 0 14px; }
@@ -534,15 +562,19 @@ input[type="range"] { width: 100%; accent-color: var(--g1); padding: 0; min-heig
   .e-top, .e-bottom { left: 24px; right: 24px; }
   .e-left, .e-right { top: 24px; bottom: 24px; }
   .e-left { left: 7px; } .e-right { right: 7px; }
-  .toolbar { gap: 6px; }
-  .chip { max-width: 150px; }
+  .toolbar { gap: 6px; padding: 0 10px; }
+  .seg { flex: 1 1 100%; justify-content: center; }
+  .seg button { flex: 1; }
+  .chip { flex: 1; max-width: none; justify-content: flex-start; min-width: 0; }
+  .pg-btn { min-width: 0; padding: 0 12px; }
+  .pager { padding: 0 10px; }
   .modal { width: calc(100% - 16px); }
   .rentang { grid-template-columns: 1fr 1fr; }
   .rentang label:first-child { grid-column: 1 / -1; }
 }
 @media (max-width: 640px) and (orientation: portrait) {
   .topbar { padding-bottom: 4px; }
-  .toolbar { margin: 2px auto 6px; }
+  .toolbar { margin: 4px auto 8px; }
   .frame { padding: 18px var(--pad-x) 24px; }
   #kepala { margin-bottom: 4px; }
   #kaki { margin-top: 4px; }
@@ -554,6 +586,8 @@ input[type="range"] { width: 100%; accent-color: var(--g1); padding: 0; min-heig
   :root { --pad-x: 6px; }
   .topbar { padding-inline: 4px; }
   .aksi .icon-btn { width: 30px; height: 30px; }
+  .pg-info span { display: none; }
+  .seg button { padding: 0 6px; font-size: .72rem; }
   .grid-juz { grid-template-columns: repeat(4, 1fr); }
 }
 @media (max-width: 380px) and (orientation: portrait) {
@@ -564,7 +598,7 @@ input[type="range"] { width: 100%; accent-color: var(--g1); padding: 0; min-heig
   .splash-line i { width: 100%; animation: none !important; will-change: auto; }
 }
 @media print {
-  .topbar, .toolbar, .player, .ayat-sheet, .site-footer, #toasts { display: none !important; }
+  .topbar, .toolbar, .pager, .player, .ayat-sheet, .site-footer, #toasts { display: none !important; }
   body { background: #fff; padding: 0; }
   .frame { box-shadow: none; backdrop-filter: none; }
 }

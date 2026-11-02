@@ -250,7 +250,7 @@ function persist() {
    ============================================================ */
 const els = {};
 ["teks","kSurah","kJuz","kNo","kaki","navLabel","userStatus","authBtn","themeIcon",
- "btnAbout","dlgAbout","splash","btnBookmark","btnBookmarks","btnMemo","btnProgress","btnTheme","btnSettings","btnNavOpen","btnMoreActions","actionItems","btnInstall","modeGroup",
+ "btnAbout","dlgAbout","splash","btnBookmark","btnBookmarks","btnMemo","btnProgress","btnTheme","btnSettings","btnNavOpen","btnMoreActions","actionItems","btnInstall","modeGroup","themeLabel","pgPrev","pgNext","pgJump","pgNo",
  "ayatSheet","asKey","asText","asPlay","asDrill","asFrom","asClose",
  "player","plBar","plPrev","plPlay","plPlayIcon","plNext","plStop","plTitle","plSub","plMore","plPanel",
  "selQari","selMode","rngWrap","rngSurah","rngFrom","rngTo","selRepAyat","selRepRange","selSpeed","selGap",
@@ -530,6 +530,9 @@ function updateChrome() {
   els.kNo.textContent = toAr(p);
   els.kaki.classList.toggle("hafal", !!S.memorized[p]);
   els.navLabel.textContent = (names[0] || "Pilih surat") + " · " + p;
+  els.pgNo.textContent = p;
+  els.pgPrev.disabled = p <= 1;
+  els.pgNext.disabled = p >= PAGES;
   els.btnBookmark.setAttribute("aria-pressed", String(S.bookmarks.some(b => b.page === p)));
   els.btnMemo.setAttribute("aria-pressed", String(!!S.memorized[p]));
   els.btnMemo.title = S.memorized[p] ? "Batalkan tanda hafal (M)" : "Tandai halaman ini sudah hafal (M)";
@@ -1101,6 +1104,7 @@ function applyTheme() {
   const meta = document.querySelector('meta[name="theme-color"]');
   if (meta) meta.setAttribute("content", THEME_COLOR[eff2]);
   els.themeIcon.setAttribute("href", { auto: "#i-auto", light: "#i-sun", dark: "#i-moon", sepia: "#i-leaf" }[pref]);
+  els.themeLabel.textContent = { auto: "Otomatis", light: "Terang", dark: "Gelap", sepia: "Sepia" }[pref];
   els.btnTheme.title = "Tema: " + { auto: "otomatis", light: "terang", dark: "gelap", sepia: "sepia" }[pref] + " (ketuk untuk mengganti)";
   $$('input[name="theme"]').forEach(r => { r.checked = r.value === pref; });
 }
@@ -1317,6 +1321,9 @@ function bindUI() {
   els.btnSettings.addEventListener("click", () => els.dlgSet.showModal());
   els.btnAbout.addEventListener("click", () => els.dlgAbout.showModal());
   els.btnNavOpen.addEventListener("click", () => openNav("surat"));
+  els.pgJump.addEventListener("click", () => openNav("surat"));
+  els.pgNext.addEventListener("click", () => goto((cur.page || S.page) + 1));   // mushaf dibaca dari kanan: tombol kiri = berikutnya
+  els.pgPrev.addEventListener("click", () => goto((cur.page || S.page) - 1));
   els.btnInstall.addEventListener("click", installApp);
   els.authBtn.addEventListener("click", toggleAuth);
   els.btnTheme.addEventListener("click", () => {
