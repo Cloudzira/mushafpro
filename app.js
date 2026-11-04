@@ -842,9 +842,93 @@ const pre = new Audio();     // elemen cadangan untuk memuat ayat berikutnya leb
 pre.preload = "auto"; pre.muted = true;
 
 const P = { queue: [], i: 0, ra: 0, rr: 0, tk: 0, active: false, paused: false, inGap: false,
-            startPage: 1, ov: {}, gapTimer: null, resume: null };
+            startPage: 1, ov: {}, gapTimer: null, resume: null, si: 0 };
 const eff = k => (P.ov[k] !== undefined ? P.ov[k] : S.settings[k]);
 const audioUrl = key => { const [s, a] = parseKey(key); return `${AUDIO_URL}${S.settings.reciter}/${pad3(s)}${pad3(a)}.mp3`; };
+
+/* Server cadangan: bila everyayah.com lambat/terblokir, otomatis dicoba server lain,
+   lalu (bila perlu) diganti suara Alafasy yang punya 3 server. */
+const QC_CDN  = "https://verses.quran.foundation/";
+const ISL_CDN = "https://cdn.islamic.app/quran/audio/";
+const FALLBACK_QARI = "Alafasy_128kbps";
+const MIRRORS = {
+  "Alafasy_128kbps":                { qc: "Alafasy/mp3", isl: "ar.alafasy" },
+  "Husary_128kbps":                 { qc: "Husary/mp3" },
+  "Husary_Muallim_128kbps":         { qc: "Husary/Muallim/mp3" },
+  "Minshawy_Murattal_128kbps":      { qc: "Minshawi/Murattal/mp3" },
+  "Abdul_Basit_Murattal_192kbps":   { qc: "AbdulBaset/Murattal/mp3" },
+  "Abdurrahmaan_As-Sudais_192kbps": { qc: "Sudais/mp3", isl: "ar.abdurrahmaansudais" },
+  "Saood_ash-Shuraym_128kbps":      { qc: "Shuraym/mp3" }
+};
+const globalAyah = (s, a) => { let n = 0; for (let i = 0; i < s - 1; i++) n += SURAH[i][2]; return n + a; };
+const hostOf = u => { try { return new URL(u).hostname; } catch { return ""; } };
+function sourcesFor(key, reciter) {
+  const [s, a] = parseKey(key);
+  const f = pad3(s) + pad3(a) + ".mp3";
+  const m = MIRRORS[reciter] || {};
+  const out = [`${AUDIO_URL}${reciter}/${f}`];
+  if (m.qc)  out.push(`${QC_CDN}${m.qc}/${f}`);
+  if (m.isl) out.push(`${ISL_CDN}${m.isl}/${globalAyah(s, a)}.mp3`);
+  return out;
+}
+// -> { list: [...semua sumber], own: jumlah sumber milik qari terpilih }
+function allSources(key) {
+  const rc = S.settings.reciter;
+  const own = sourcesFor(key, rc);
+  if (rc === FALLBACK_QARI) return { list: own, own: own.length };
+  return { list: own.concat(sourcesFor(key, FALLBACK_QARI)), own: own.length };
+}
+let loadingSrc = false;      // true selama mencari sumber audio yang bisa diputar
+let notedFallback = false;   // pemberitahuan "diganti Alafasy" cukup sekali per sesi putar
+const PLAY_TIMEOUT = 9000;
+const badHosts = {};         // server yang macet (timeout) diingat 3 menit agar ayat berikutnya tidak menunggu lagi
+const BAD_TTL = 180000;
+const isBad = h => badHosts[h] && (Date.now() - badHosts[h]) < BAD_TTL;
+
+function playWithTimeout(ms) {
+  return new Promise((resolve, reject) => {
+    const t = setTimeout(() => reject(new Error("timeout")), ms);
+    au.play().then(() => { clearTimeout(t); resolve(); }, e => { clearTimeout(t); reject(e); });
+  });
+}
+
+// Coba tiap sumber berurutan. true = berhasil diputar, false = gagal/dibatalkan.
+async function playSources(my, key) {
+  const { list, own } = allSources(key);
+  const failed = new Set();
+  const rate = Number(S.settings.speed) || 1;
+  const skipBad = list.some(u => !isBad(hostOf(u)));   // lewati server macet, selama masih ada yang lain
+  for (let i = 0; i < list.length; i++) {
+    if (my !== P.tk || !P.active) return false;
+    const host = hostOf(list[i]);
+    if (skipBad && isBad(host)) continue;
+    if (i >= own && failed.has(host)) continue;     // pada suara pengganti, lewati server yang baru gagal
+    au.defaultPlaybackRate = rate;
+    au.src = list[i];
+    au.playbackRate = rate; au.preservesPitch = true;
+    try {
+      await playWithTimeout(PLAY_TIMEOUT);
+      if (my !== P.tk) return false;
+      P.si = i;
+      if (i >= own && !notedFallback) {
+        notedFallback = true;
+        toast("Server qari ini sedang gagal, memutar suara Alafasy sebagai pengganti.");
+      }
+      return true;
+    } catch (err) {
+      if (my !== P.tk) return false;
+      if (err && err.name === "AbortError") return false;          // dijeda/dibatalkan pengguna
+      if (err && err.name === "NotAllowedError") {
+        toast("Browser menahan suara. Ketuk tombol putar sekali lagi.");
+        return null;                                                  // sudah diberi tahu, jangan beri pesan ganda
+      }
+      console.warn("Audio gagal:", list[i], err);
+      failed.add(host);
+      if (err && err.message === "timeout") badHosts[host] = Date.now();
+    }
+  }
+  return false;
+}
 
 function buildQueue() {
   const mode = S.settings.audioMode;
@@ -891,7 +975,7 @@ async function startPlayback(queue, ov = {}) {
   if (!queue.length) { toast("Tidak ada ayat untuk diputar."); return; }
   unlockAudio();
   hardStop(false);
-  P.queue = queue; P.ov = ov; P.active = true; P.startPage = cur.page;
+  P.queue = queue; P.ov = ov; P.active = true; P.startPage = cur.page; P.si = 0; notedFallback = false;
   const my = ++P.tk;
   setSessionHandlers();
   await playCurrent(my);
@@ -905,20 +989,19 @@ async function playCurrent(my) {
   markPlaying(key);
   if (S.settings.autoReveal) revealVerse(key);
   clearGap();
-  const rate = Number(S.settings.speed) || 1;
-  au.src = audioUrl(key);
-  au.defaultPlaybackRate = rate; au.playbackRate = rate;
-  au.preservesPitch = true;
-  try {
-    await au.play();
-  } catch (err) {
-    if (my !== P.tk) return;
-    if (err && err.name === "AbortError") return;
-    toast("Audio tidak dapat diputar. Periksa koneksi internet atau ganti qari.");
-    hardStop(true);
+  loadingSrc = true;
+  let ok = false;
+  try { ok = await playSources(my, key); } finally { loadingSrc = false; }
+  if (ok === null) { if (my === P.tk) hardStop(true); return; }
+  if (!ok) {
+    if (my === P.tk && P.active) {
+      toast(navigator.onLine === false
+        ? "Tidak ada koneksi internet."
+        : "Audio gagal dimuat dari semua server. Coba lagi atau ganti qari.");
+      hardStop(true);
+    }
     return;
   }
-  if (my !== P.tk) return;
   ui(); mediaMeta(key); prefetchNext();
 }
 
@@ -943,7 +1026,7 @@ function prefetchNext() {
   const repA = Number(eff("repeatAyah"));
   if (repA === 0 || P.ra + 1 < repA) return;
   const nxt = P.queue[P.i + 1];
-  if (nxt) { pre.src = audioUrl(nxt); try { pre.load(); } catch { /* abaikan */ } }
+  if (nxt) { const L = allSources(nxt).list; pre.src = L[Math.min(P.si || 0, L.length - 1)]; try { pre.load(); } catch { /* abaikan */ } }
 }
 
 au.addEventListener("ended", () => {
@@ -981,7 +1064,7 @@ au.addEventListener("timeupdate", () => {
   if (au.duration > 0) els.plBar.style.width = (au.currentTime / au.duration * 100) + "%";
 });
 au.addEventListener("error", () => {
-  if (!P.active || isSilent()) return;
+  if (loadingSrc || !P.active || isSilent()) return;
   toast("Audio gagal dimuat. Periksa koneksi internet atau ganti qari.");
   hardStop(true);
 });
