@@ -30,8 +30,7 @@
   --grad-judul: linear-gradient(90deg, #61523f, #887452, #a58c6b);
   --sorot-putar: rgba(138, 115, 85, .28);
   --putar-teks: #8e5d3c;
-  --sel-teks: #000;
-  --redup-lain: .3;
+  --sel-teks: #e8590c;
   --glow-aksen: rgba(138, 115, 85, .26);
   --banner-grad: linear-gradient(105deg, #756345, #53634d);
   --banner-shadow: 0 4px 16px rgba(76, 83, 60, .2);
@@ -70,8 +69,7 @@ html[data-theme="dark"] {
   --grad-judul: linear-gradient(90deg, #ded1b3, #c6ad7e, #a88e65);
   --sorot-putar: rgba(196, 170, 126, .3);
   --putar-teks: #d0b47a;
-  --sel-teks: #fff6dc;
-  --redup-lain: .4;
+  --sel-teks: #ffa94d;
   --glow-aksen: rgba(196, 170, 126, .26);
   --banner-grad: linear-gradient(105deg, #796544, #4b5c46);
   --banner-shadow: 0 4px 16px rgba(196, 170, 126, .18);
@@ -110,8 +108,7 @@ html[data-theme="sepia"] {
   --grad-judul: linear-gradient(90deg, #4f6048, #795144, #5d513a);
   --sorot-putar: rgba(139, 118, 84, .28);
   --putar-teks: #875540;
-  --sel-teks: #140a04;
-  --redup-lain: .33;
+  --sel-teks: #d9480f;
   --glow-aksen: rgba(112, 79, 61, .26);
   --banner-grad: linear-gradient(105deg, #536047, #754c40);
   --banner-shadow: 0 4px 14px rgba(74, 61, 43, .2);
@@ -331,15 +328,8 @@ html[data-theme="sepia"] .frame::before { inset: 10px; border-color: rgba(91, 82
   flex: none; line-height: normal; position: relative; z-index: 1; cursor: pointer; border-radius: 8px;
   transition: filter .15s ease, opacity .15s ease, background-color .2s ease;
 }
-.kata.sel, .kata.sel.putar {
-  color: var(--sel-teks);
-  text-shadow: 0 0 .018em var(--sel-teks);   /* sedikit lebih tebal, tanpa blok latar */
-}
-/* saat ada ayat dipilih, ayat lain diredupkan supaya warna ayat terpilih lebih kontras
-   (tidak berlaku di mode hafalan blur/first agar tidak bentrok dengan penyamarannya) */
-#teks.ada-sel:not(.m-blur):not(.m-first) .kata:not(.sel) { opacity: var(--redup-lain, .35); }
-.kata.putar {
-  color: var(--putar-teks);
+.kata.sel, .kata.putar, .kata.sel.putar {
+  color: var(--sel-teks);   /* ayat diklik / sedang bersuara: warna oranye, kontras dengan ayat lain */
 }
 .kata.is-end:focus-visible { outline-offset: 0; }
 
