@@ -30,6 +30,9 @@
   --grad-judul: linear-gradient(90deg, #61523f, #887452, #a58c6b);
   --sorot-putar: rgba(138, 115, 85, .28);
   --putar-teks: #8e5d3c;
+  --sel-bg: rgba(201, 146, 36, .34);
+  --sel-teks: #1c150c;
+  --sel-ring: rgba(150, 100, 20, .55);
   --glow-aksen: rgba(138, 115, 85, .26);
   --banner-grad: linear-gradient(105deg, #756345, #53634d);
   --banner-shadow: 0 4px 16px rgba(76, 83, 60, .2);
@@ -68,6 +71,9 @@ html[data-theme="dark"] {
   --grad-judul: linear-gradient(90deg, #ded1b3, #c6ad7e, #a88e65);
   --sorot-putar: rgba(196, 170, 126, .3);
   --putar-teks: #d0b47a;
+  --sel-bg: rgba(232, 190, 96, .34);
+  --sel-teks: #fff6dc;
+  --sel-ring: rgba(240, 205, 120, .6);
   --glow-aksen: rgba(196, 170, 126, .26);
   --banner-grad: linear-gradient(105deg, #796544, #4b5c46);
   --banner-shadow: 0 4px 16px rgba(196, 170, 126, .18);
@@ -106,6 +112,9 @@ html[data-theme="sepia"] {
   --grad-judul: linear-gradient(90deg, #4f6048, #795144, #5d513a);
   --sorot-putar: rgba(139, 118, 84, .28);
   --putar-teks: #875540;
+  --sel-bg: rgba(170, 105, 40, .30);
+  --sel-teks: #24140a;
+  --sel-ring: rgba(120, 70, 25, .55);
   --glow-aksen: rgba(112, 79, 61, .26);
   --banner-grad: linear-gradient(105deg, #536047, #754c40);
   --banner-shadow: 0 4px 14px rgba(74, 61, 43, .2);
@@ -136,7 +145,7 @@ body {
   font-weight: 400;
   background: var(--latar);
   background-attachment: fixed;
-  padding-bottom: calc(var(--player-h) + 28px + env(safe-area-inset-bottom));
+  padding-bottom: calc(var(--player-h) + 28px + var(--sheet-extra, 0px) + env(safe-area-inset-bottom));
   transition: color .2s ease, background .2s ease;
 }
 button, input, select { font-family: inherit; color: inherit; }
@@ -326,8 +335,14 @@ html[data-theme="sepia"] .frame::before { inset: 10px; border-color: rgba(91, 82
   transition: filter .15s ease, opacity .15s ease, background-color .2s ease;
 }
 .kata.sel {
-  color: var(--putar-teks);
+  color: var(--sel-teks);
+  background-color: var(--sel-bg);
+  /* sedikit melebar agar sorotan menyambung antar kata (jarak antar kata = .12em) */
+  box-shadow: 0 0 0 .06em var(--sel-bg), 0 .02em 0 .06em var(--sel-ring);
 }
+/* saat ada ayat dipilih, ayat lain diredupkan supaya yang dipilih jelas menonjol
+   (tidak berlaku di mode hafalan blur/first agar tidak bentrok dengan penyamarannya) */
+#teks.ada-sel:not(.m-blur):not(.m-first) .kata:not(.sel):not(.putar) { opacity: .5; }
 .kata.putar {
   color: var(--putar-teks);
 }
@@ -596,6 +611,15 @@ input[type="range"] { width: 100%; accent-color: var(--g1); padding: 0; min-heig
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
   .splash-line i { width: 100%; animation: none !important; will-change: auto; }
+}
+/* landscape (layar pendek): kartu ayat & pemutar dibuat ringkas supaya ayat tetap terlihat */
+@media (orientation: landscape) and (max-height: 560px) {
+  :root { --player-h: 56px; }
+  .ayat-sheet { padding: 8px 12px; bottom: calc(var(--player-h) + 8px + env(safe-area-inset-bottom)); }
+  .as-text { margin: 4px 0 6px; font-size: .78rem; line-height: 1.45; max-height: 14vh; }
+  .as-act button { padding: 5px 11px; font-size: .72rem; }
+  .pl-main { padding: 5px 14px; }
+  .pl-ctrl .icon-btn.utama { width: 38px; height: 38px; }
 }
 @media print {
   .topbar, .toolbar, .pager, .player, .ayat-sheet, .site-footer, #toasts { display: none !important; }

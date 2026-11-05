@@ -572,16 +572,20 @@ function toggleVerse(key) {
 }
 function revealVerse(key) { (cur.words.get(key) || []).forEach(w => w.classList.add("terbuka")); }
 
+function syncSelClass() { els.teks.classList.toggle("ada-sel", !!cur.sel); }
 function clearSel() {
   if (cur.sel) (cur.words.get(cur.sel) || []).forEach(w => w.classList.remove("sel"));
   cur.sel = null;
+  syncSelClass();
 }
 function selectVerse(key, opts = {}) {
   clearSel();
   cur.sel = key;
   (cur.words.get(key) || []).forEach(w => w.classList.add("sel"));
+  syncSelClass();
   setHighlight(key);
   if (opts.sheet !== false) showSheet(key);
+  keepInViewSoon(key);
 }
 function setHighlight(key) {
   if (highlightKey && highlightKey !== key) (cur.words.get(highlightKey) || []).forEach(w => w.classList.remove("putar"));
@@ -591,15 +595,72 @@ function setHighlight(key) {
 function markPlaying(key) {
   const changed = key !== playingKey;
   playingKey = key;
-  if (key && changed) setHighlight(key);
+  if (key && changed) { setHighlight(key); keepInViewSoon(key); }
 }
 function reapplyMarks() {
   if (cur.sel) {
     if (cur.words.has(cur.sel)) (cur.words.get(cur.sel)).forEach(w => w.classList.add("sel"));
-    else { cur.sel = null; els.ayatSheet.hidden = true; }
+    else { cur.sel = null; els.ayatSheet.hidden = true; syncSheetSpace(); }
   }
+  syncSelClass();
   if (highlightKey && cur.words.has(highlightKey)) (cur.words.get(highlightKey)).forEach(w => w.classList.add("putar"));
 }
+
+/* ---- Jaga ayat yang diputar / dipilih tetap terlihat di layar (terutama landscape) ----
+   Area terlihat = layar dikurangi pemutar audio & kartu ayat yang menempel di bawah. */
+const REDUCE_MOTION = window.matchMedia("(prefers-reduced-motion: reduce)");
+function syncSheetSpace() {
+  // ruang kosong tambahan di bawah halaman, supaya baris terakhir bisa digulir di atas kartu ayat
+  const px = els.ayatSheet.hidden ? 0 : els.ayatSheet.offsetHeight + 8;
+  document.documentElement.style.setProperty("--sheet-extra", px + "px");
+}
+function visibleBottom() {
+  let b = window.innerHeight;
+  const blockers = [$("player"), els.ayatSheet];
+  blockers.forEach(el => {
+    if (!el || el.hidden) return;
+    const r = el.getBoundingClientRect();
+    if (r.height > 0) b = Math.min(b, r.top);
+  });
+  return b;
+}
+function keepInView(key) {
+  const ws = key ? cur.words.get(key) : null;
+  if (!ws || !ws.length) return;
+  syncSheetSpace();
+  let top = Infinity, bot = -Infinity;
+  ws.forEach(w => {
+    const r = w.getBoundingClientRect();
+    if (!r.height) return;
+    if (r.top < top) top = r.top;
+    if (r.bottom > bot) bot = r.bottom;
+  });
+  if (top === Infinity) return;
+  const pad = 12;
+  const vTop = pad, vBot = visibleBottom() - pad;
+  const room = vBot - vTop;
+  if (room <= 40) return;
+  if (top >= vTop && bot <= vBot) return;            // sudah terlihat penuh
+  const h = bot - top;
+  const delta = h >= room
+    ? top - vTop                                     // ayat panjang: tampilkan awal ayat di atas
+    : (top + bot) / 2 - (vTop + room / 2);           // ayat pendek: taruh di tengah area terlihat
+  if (Math.abs(delta) < 2) return;
+  window.scrollBy({ top: delta, left: 0, behavior: REDUCE_MOTION.matches ? "auto" : "smooth" });
+}
+let keepRaf = 0;
+function keepInViewSoon(key) {
+  cancelAnimationFrame(keepRaf);
+  // tunggu tata letak (fit) dan kartu ayat selesai digambar
+  keepRaf = requestAnimationFrame(() => { keepRaf = requestAnimationFrame(() => keepInView(key)); });
+}
+// Layar diputar / ukuran berubah: tampilkan lagi ayat yang sedang diputar atau dipilih
+const keepAfterResize = debounce(() => {
+  const k = (P.active && playingKey) || cur.sel;
+  if (k) keepInView(k);
+}, 350);
+window.addEventListener("resize", keepAfterResize);
+window.addEventListener("orientationchange", keepAfterResize);
 
 els.teks.addEventListener("click", e => {
   const k = e.target.closest(".kata");
@@ -639,12 +700,12 @@ async function showSheet(key) {
   els.asText.textContent = "Memuat terjemahan…";
   try {
     const t = await getTranslation(key);
-    if (cur.sel === key) els.asText.textContent = t;
+    if (cur.sel === key) { els.asText.textContent = t; keepInViewSoon(key); }
   } catch {
-    if (cur.sel === key) els.asText.textContent = "Terjemahan belum tersedia (periksa koneksi internet).";
+    if (cur.sel === key) { els.asText.textContent = "Terjemahan belum tersedia (periksa koneksi internet)."; keepInViewSoon(key); }
   }
 }
-function closeSheet() { els.ayatSheet.hidden = true; clearSel(); }
+function closeSheet() { els.ayatSheet.hidden = true; clearSel(); syncSheetSpace(); }
 
 els.asClose.addEventListener("click", closeSheet);
 els.asPlay.addEventListener("click", () => { if (cur.sel) startPlayback([cur.sel], { repeatRange: 1 }); });
