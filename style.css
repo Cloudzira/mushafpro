@@ -343,22 +343,15 @@ html[data-theme="sepia"] .frame::before { inset: 10px; border-color: rgba(91, 82
   padding: 9px 18px; border-radius: 999px; font-size: .8rem; font-weight: 600;
 }
 
-/* ------------------------------------------------------------ pager halaman */
-.pager {
-  display: flex; align-items: center; justify-content: space-between; gap: 8px;
-  max-width: var(--w); margin: 12px auto 0; padding: 0 4px;
-}
-.pg-btn, .pg-info {
-  display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 40px;
-  border: 1px solid var(--tepi); border-radius: 999px; background: var(--kaca); color: var(--teks-lembut);
-  font-size: .78rem; font-weight: 600; backdrop-filter: blur(16px); box-shadow: 0 4px 16px rgba(0, 0, 0, .04);
+/* ------------------------------------------------------------ tombol halaman (ikon) */
+.navgrup { display: inline-flex; align-items: center; gap: 8px; min-width: 0; }
+.pg-btn {
+  display: inline-grid; place-items: center; flex: none; width: 40px; height: 40px; padding: 0;
+  border: 1px solid var(--tepi); border-radius: 50%; background: var(--kaca); color: var(--teks-lembut);
+  backdrop-filter: blur(16px); box-shadow: 0 4px 16px rgba(0, 0, 0, .04);
   transition: border-color .15s, color .15s, opacity .15s;
 }
-.pg-btn { padding: 0 16px; min-width: 120px; }
-.pg-info { flex: 1; max-width: 220px; padding: 0 14px; }
-.pg-info b { color: var(--aksen); font-variant-numeric: tabular-nums; }
-.pg-info span { color: var(--redup); font-weight: 500; }
-.pg-btn:hover:not(:disabled), .pg-info:hover { border-color: var(--aksen); color: var(--aksen); }
+.pg-btn:hover:not(:disabled) { border-color: var(--aksen); color: var(--aksen); }
 .pg-btn:disabled { opacity: .4; }
 
 .site-footer { padding: 8px 12px 16px; text-align: center; font: 11px sans-serif; color: var(--footer-muted); }
@@ -565,9 +558,8 @@ input[type="range"] { width: 100%; accent-color: var(--g1); padding: 0; min-heig
   .toolbar { gap: 6px; padding: 0 10px; }
   .seg { flex: 1 1 100%; justify-content: center; }
   .seg button { flex: 1; }
-  .chip { flex: 1; max-width: none; justify-content: flex-start; min-width: 0; }
-  .pg-btn { min-width: 0; padding: 0 12px; }
-  .pager { padding: 0 10px; }
+  .chip { flex: 1; max-width: none; justify-content: center; min-width: 0; }
+  .navgrup { flex: 1 1 auto; min-width: 0; }
   .modal { width: calc(100% - 16px); }
   .rentang { grid-template-columns: 1fr 1fr; }
   .rentang label:first-child { grid-column: 1 / -1; }
@@ -586,7 +578,6 @@ input[type="range"] { width: 100%; accent-color: var(--g1); padding: 0; min-heig
   :root { --pad-x: 6px; }
   .topbar { padding-inline: 4px; }
   .aksi .icon-btn { width: 30px; height: 30px; }
-  .pg-info span { display: none; }
   .seg button { padding: 0 6px; font-size: .72rem; }
   .grid-juz { grid-template-columns: repeat(4, 1fr); }
 }
@@ -607,7 +598,7 @@ input[type="range"] { width: 100%; accent-color: var(--g1); padding: 0; min-heig
   .pl-ctrl .icon-btn.utama { width: 38px; height: 38px; }
 }
 @media print {
-  .topbar, .toolbar, .pager, .player, .ayat-sheet, .site-footer, #toasts { display: none !important; }
+  .topbar, .toolbar, .player, .ayat-sheet, .site-footer, #toasts { display: none !important; }
   body { background: #fff; padding: 0; }
   .frame { box-shadow: none; backdrop-filter: none; }
 }

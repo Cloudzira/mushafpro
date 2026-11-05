@@ -250,7 +250,7 @@ function persist() {
    ============================================================ */
 const els = {};
 ["teks","kSurah","kJuz","kNo","kaki","navLabel","userStatus","authBtn","themeIcon",
- "btnAbout","dlgAbout","splash","btnBookmark","btnBookmarks","btnMemo","btnProgress","btnTheme","btnSettings","btnNavOpen","btnMoreActions","actionItems","btnInstall","modeGroup","themeLabel","pgPrev","pgNext","pgJump","pgNo",
+ "btnAbout","dlgAbout","splash","btnBookmark","btnBookmarks","btnMemo","btnProgress","btnTheme","btnSettings","btnNavOpen","btnMoreActions","actionItems","btnInstall","modeGroup","themeLabel","pgPrev","pgNext",
  "ayatSheet","asKey","asText","asPlay","asDrill","asFrom","asClose",
  "player","plBar","plPrev","plPlay","plPlayIcon","plNext","plStop","plTitle","plSub","plMore","plPanel",
  "selQari","selMode","rngWrap","rngSurah","rngFrom","rngTo","selRepAyat","selRepRange","selSpeed","selGap",
@@ -530,7 +530,6 @@ function updateChrome() {
   els.kNo.textContent = toAr(p);
   els.kaki.classList.toggle("hafal", !!S.memorized[p]);
   els.navLabel.textContent = (names[0] || "Pilih surat") + " · " + p;
-  els.pgNo.textContent = p;
   els.pgPrev.disabled = p <= 1;
   els.pgNext.disabled = p >= PAGES;
   els.btnBookmark.setAttribute("aria-pressed", String(S.bookmarks.some(b => b.page === p)));
@@ -1465,7 +1464,6 @@ function bindUI() {
   els.btnSettings.addEventListener("click", () => els.dlgSet.showModal());
   els.btnAbout.addEventListener("click", () => els.dlgAbout.showModal());
   els.btnNavOpen.addEventListener("click", () => openNav("surat"));
-  els.pgJump.addEventListener("click", () => openNav("surat"));
   els.pgNext.addEventListener("click", () => goto((cur.page || S.page) + 1));   // mushaf dibaca dari kanan: tombol kiri = berikutnya
   els.pgPrev.addEventListener("click", () => goto((cur.page || S.page) - 1));
   els.btnInstall.addEventListener("click", installApp);

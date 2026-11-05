@@ -100,10 +100,14 @@
       </button>
     </div>
 
-    <button id="btnNavOpen" class="chip" type="button" title="Navigasi surat, juz, dan ayat (/)">
-      <svg class="ik" aria-hidden="true"><use href="#i-compass"/></svg>
-      <span id="navLabel">Pilih surat</span>
-    </button>
+    <div class="navgrup">
+      <button id="pgNext" class="pg-btn" type="button" title="Halaman berikutnya (←)" aria-label="Halaman berikutnya"><svg class="ik" aria-hidden="true"><use href="#i-left"/></svg></button>
+      <button id="btnNavOpen" class="chip" type="button" title="Navigasi surat, juz, dan ayat (/)">
+        <svg class="ik" aria-hidden="true"><use href="#i-compass"/></svg>
+        <span id="navLabel">Pilih surat</span>
+      </button>
+      <button id="pgPrev" class="pg-btn" type="button" title="Halaman sebelumnya (→)" aria-label="Halaman sebelumnya"><svg class="ik" aria-hidden="true"><use href="#i-right"/></svg></button>
+    </div>
 
     <div class="aksi">
       <button id="btnBookmark" class="icon-btn" type="button" aria-pressed="false" title="Simpan penanda halaman (B)"><svg class="ik" aria-hidden="true"><use href="#i-bookmark"/></svg><span class="sr">Penanda halaman ini</span></button>
@@ -136,11 +140,6 @@
       <div id="kaki"><span id="kNo"></span></div>
     </section>
 
-    <nav class="pager" aria-label="Pindah halaman">
-      <button id="pgNext" class="pg-btn" type="button" title="Halaman berikutnya (←)"><svg class="ik" aria-hidden="true"><use href="#i-left"/></svg><span>Berikutnya</span></button>
-      <button id="pgJump" class="pg-info" type="button" title="Buka navigasi surat, juz, dan ayat (/)">Halaman <b id="pgNo">1</b> <span>dari 604</span></button>
-      <button id="pgPrev" class="pg-btn" type="button" title="Halaman sebelumnya (→)"><span>Sebelumnya</span><svg class="ik" aria-hidden="true"><use href="#i-right"/></svg></button>
-    </nav>
   </main>
 
   <footer class="site-footer">
