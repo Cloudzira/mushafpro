@@ -504,7 +504,8 @@ async function goto(no, opts = {}) {
   if (!(no >= 1 && no <= PAGES)) return false;
   const tk = ++token;
   if (!opts.auto) userNavigated = true;
-  if (!opts.keepAudio) hardStop(true);
+  // Audio TIDAK dihentikan saat pindah halaman; berhenti hanya lewat tombol stop / jeda,
+  // atau saat pengguna memutar ayat lain.
   S.page = no;
   persist();
   const ok = await render(no, tk);
@@ -582,7 +583,6 @@ function selectVerse(key, opts = {}) {
   cur.sel = key;
   (cur.words.get(key) || []).forEach(w => w.classList.add("sel"));
   syncSelClass();
-  setHighlight(key);
   if (opts.sheet !== false) showSheet(key);
   keepInViewSoon(key);
 }
@@ -594,7 +594,8 @@ function setHighlight(key) {
 function markPlaying(key) {
   const changed = key !== playingKey;
   playingKey = key;
-  if (key && changed) { setHighlight(key); keepInViewSoon(key); }
+  if (changed) setHighlight(key);
+  if (key && changed) keepInViewSoon(key);
 }
 function reapplyMarks() {
   if (cur.sel) {
@@ -1065,8 +1066,14 @@ async function playCurrent(my) {
   ui(); mediaMeta(key); prefetchNext();
 }
 
+// Apakah tampilan masih "mengikuti" audio? Ya bila belum ada ayat yang diputar, atau
+// ayat yang baru saja diputar masih ada di halaman yang sedang dibuka.
+// Jika pengguna sudah pindah ke halaman lain, audio tetap jalan tetapi layar tidak ditarik kembali.
+const isFollowing = () => !playingKey || cur.verseSet.has(playingKey);
+
 async function ensureVisible(key, my) {
   if (cur.verseSet.has(key)) return;
+  if (!isFollowing()) return;
   let p = null;
   try { p = await versePage(key); } catch { /* lanjut ke langkah manual */ }
   if (my !== P.tk) return;
@@ -1104,7 +1111,7 @@ au.addEventListener("ended", () => {
       const rr = Number(eff("repeatRange"));
       if (rr === 0 || P.rr < rr) {
         P.i = 0;
-        if (cur.page !== P.startPage) await goto(P.startPage, { keepAudio: true, auto: true });
+        if (cur.page !== P.startPage && isFollowing()) await goto(P.startPage, { keepAudio: true, auto: true });
       } else { finish(); return; }
     }
     return playCurrent(my);

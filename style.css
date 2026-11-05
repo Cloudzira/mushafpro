@@ -129,7 +129,12 @@ html[data-theme="sepia"] {
 /* ------------------------------------------------------------ dasar */
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 [hidden] { display: none !important; }
-html { background: var(--latar-solid); scroll-behavior: smooth; scrollbar-gutter: stable; }
+html {
+  background: var(--latar-solid); scroll-behavior: smooth; scrollbar-gutter: stable;
+  overflow-x: hidden;               /* halaman tidak pernah bisa digeser ke kiri-kanan */
+  overscroll-behavior-x: none;      /* cegah geser horizontal trackpad / gestur kembali di laptop */
+}
+body { overscroll-behavior-x: none; }
 body {
   margin: 0;
   min-height: 100vh;
