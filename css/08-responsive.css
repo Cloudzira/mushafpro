@@ -21,7 +21,7 @@
   .read-progress { border-radius: 0; }
   .frame { padding: 30px var(--pad-x) 26px; }
 
-  .toolbar { gap: 6px; padding: 0 10px; }
+  .toolbar { width: 100%; gap: 6px; padding: 0 10px; }
   .seg { flex: 1 1 100%; justify-content: center; }
   .seg button { flex: 1; }
   .navgrup { flex: 1 1 0; min-width: 0; }                     /* ‹ surat › memakai sisa ruang, tombol aksi tetap sebaris */

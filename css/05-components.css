@@ -15,9 +15,9 @@
 .icon-btn.kecil { width: 30px; height: 30px; }
 .icon-btn:disabled { opacity: .35; }
 
-/* Tombol ikon dengan teks (tampil hanya di layar lebar) */
+/* Tombol ikon dengan teks: hanya bila toolbar cukup lebar (mis. lebar halaman diset besar) */
 .icon-btn.has-label .lbl-wide { display: none; }
-@media (min-width: 761px) {
+@container (min-width: 820px) {
   .icon-btn.has-label {
     display: inline-flex; align-items: center; justify-content: center; gap: 6px;
     width: auto; padding: 0 12px 0 10px; border-radius: var(--r-pill);

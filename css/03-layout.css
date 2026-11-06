@@ -67,8 +67,10 @@
 /* ------------------------------------------------------------ toolbar */
 .toolbar {
   position: relative; z-index: var(--z-toolbar);
-  display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: var(--sp-2);
-  max-width: 980px; margin: 10px auto 14px; padding: 0 16px;
+  display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: var(--sp-2);
+  width: min(var(--w), calc(100% - 24px));   /* selebar bingkai halaman & bilah atas */
+  margin: 10px auto 14px; padding: 0;
+  container-type: inline-size;               /* memungkinkan @container pada tombol di dalamnya */
 }
 
 /* Pil dasar: dipakai oleh mode hafalan, tombol navigasi, dan aksi */
@@ -110,7 +112,7 @@
 .pg-btn:disabled { opacity: .4; }
 
 /* Aksi cepat (penanda, hafal, menu lainnya) */
-.aksi { position: relative; padding: 3px; gap: 2px; }
+.aksi { position: relative; padding: 3px; gap: 2px; margin-left: auto; }
 
 /* ------------------------------------------------------------ footer */
 .site-footer { padding: 8px 12px 16px; text-align: center; font: 11px var(--f-ui); color: var(--footer-muted); }
