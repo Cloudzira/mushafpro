@@ -1,0 +1,140 @@
+/* ============================================================
+   03-layout.css — Kerangka halaman: bilah atas, toolbar, footer, layar pembuka
+   ============================================================ */
+
+/* ------------------------------------------------------------ bilah atas */
+.topbar {
+  position: relative; z-index: var(--z-bar);
+  display: flex; align-items: center; justify-content: space-between; gap: var(--sp-3);
+  width: min(var(--w), calc(100% - 24px)); margin: 0 auto; padding: 8px 12px;
+  padding-top: max(8px, env(safe-area-inset-top));
+  color: #fff; background: linear-gradient(110deg, var(--g1), var(--g2));
+  border: 1px solid rgba(255, 255, 255, .16); border-radius: var(--r-md);
+  box-shadow: 0 6px 18px rgba(35, 32, 26, .14);
+}
+
+.brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.brand-logo { width: 34px; height: 34px; flex: none; border-radius: 9px; box-shadow: 0 2px 8px rgba(0, 0, 0, .25); }
+.brand-text { display: flex; flex-direction: column; line-height: 1.15; min-width: 0; }
+.brand .arab {
+  padding-right: 6px;               /* ruang agar huruf Arab tidak terpotong */
+  font-family: var(--f-arab); font-weight: 600; font-size: 1.3rem; color: #fff; white-space: nowrap;
+}
+.brand small {
+  padding-right: 6px; font-size: .62rem; font-weight: 600; letter-spacing: .14em;
+  text-transform: uppercase; color: rgba(255, 255, 255, .78); white-space: nowrap;
+}
+
+.header-actions { display: flex; align-items: center; gap: var(--sp-2); flex: none; }
+
+.about-btn {
+  width: 34px; height: 34px; flex: none; display: grid; place-items: center; padding: 0;
+  color: #fff; background: rgba(255, 255, 255, .12); border: 1px solid rgba(255, 255, 255, .24);
+  border-radius: 50%; box-shadow: 0 2px 8px rgba(0, 0, 0, .08);
+  transition: border-color var(--t-fast), background var(--t-fast), transform var(--t-fast);
+}
+.about-btn:hover { border-color: rgba(255, 255, 255, .5); background: rgba(255, 255, 255, .22); }
+.about-btn:active { transform: scale(.94); }
+
+.auth-box {
+  display: flex; align-items: center; gap: var(--sp-2); padding: 4px 6px 4px 12px;
+  font-size: .75rem; font-weight: 500; color: #fff;
+  background: rgba(255, 255, 255, .12); border: 1px solid rgba(255, 255, 255, .24); border-radius: var(--r-pill);
+  backdrop-filter: blur(14px); box-shadow: 0 2px 8px rgba(0, 0, 0, .04);
+}
+.auth-box .ik { width: 14px; height: 14px; }
+.auth-box #userStatus { max-width: 9ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.auth-box button {
+  padding: 5px 12px 5px 16px; border: 0; border-radius: var(--r-pill);
+  background: rgba(0, 0, 0, .18); color: #fff; font-size: .72rem; font-weight: 600;
+  transition: opacity var(--t-fast);
+}
+.auth-box button:hover { opacity: .88; }
+.auth-box button:disabled { opacity: .45; }
+
+/* Posisi bacaan (604 halaman). Terisi dari kanan, seperti membuka mushaf. */
+.read-progress {
+  direction: rtl; overflow: hidden;
+  width: min(var(--w), calc(100% - 24px)); height: 3px; margin: 8px auto 0;
+  border-radius: var(--r-pill); background: var(--tepi);
+}
+.read-progress i {
+  display: block; width: 0; height: 100%; border-radius: inherit;
+  background: linear-gradient(90deg, var(--g2), var(--aksen));
+  transition: width .3s var(--ease);
+}
+
+/* ------------------------------------------------------------ toolbar */
+.toolbar {
+  position: relative; z-index: var(--z-toolbar);
+  display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: var(--sp-2);
+  max-width: 980px; margin: 10px auto 14px; padding: 0 16px;
+}
+
+/* Pil dasar: dipakai oleh mode hafalan, tombol navigasi, dan aksi */
+.seg, .chip, .aksi {
+  display: inline-flex; align-items: center; height: 40px; border-radius: var(--r-pill);
+  background: var(--kaca); border: 1px solid var(--tepi);
+  backdrop-filter: blur(16px); box-shadow: 0 4px 16px rgba(0, 0, 0, .04);
+}
+
+/* Mode hafalan */
+.seg { padding: 3px; gap: 2px; }
+.seg button {
+  height: 32px; padding: 0 12px; display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  border: 0; border-radius: var(--r-pill); background: transparent;
+  color: var(--teks-lembut); font-size: var(--fs-sm); font-weight: 600; white-space: nowrap;
+  transition: background var(--t-fast), color var(--t-fast), box-shadow var(--t-fast);
+}
+.seg button .ik { width: 15px; height: 15px; }
+.seg button:hover { background: var(--kaca-halus); }
+.seg button[aria-checked="true"] { background: var(--g1); color: #fff; box-shadow: 0 3px 10px var(--glow-aksen); }
+
+/* Navigasi: ‹ [surat · halaman] › */
+.navgrup { display: inline-flex; align-items: center; gap: var(--sp-2); min-width: 0; }
+.chip {
+  gap: var(--sp-2); padding: 0 14px; max-width: 220px;
+  font-size: var(--fs-sm); font-weight: 600; color: var(--teks-lembut);
+  transition: border-color var(--t-fast), transform var(--t-fast);
+}
+.chip span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.chip:hover { border-color: var(--aksen); transform: translateY(-1px); }
+.pg-btn {
+  display: inline-grid; place-items: center; flex: none; width: 40px; height: 40px; padding: 0;
+  border: 1px solid var(--tepi); border-radius: 50%; background: var(--kaca); color: var(--teks-lembut);
+  backdrop-filter: blur(16px); box-shadow: 0 4px 16px rgba(0, 0, 0, .04);
+  transition: border-color var(--t-fast), color var(--t-fast), opacity var(--t-fast), transform var(--t-fast);
+}
+.pg-btn:hover:not(:disabled) { border-color: var(--aksen); color: var(--aksen); }
+.pg-btn:active:not(:disabled) { transform: scale(.94); }
+.pg-btn:disabled { opacity: .4; }
+
+/* Aksi cepat (penanda, hafal, menu lainnya) */
+.aksi { position: relative; padding: 3px; gap: 2px; }
+
+/* ------------------------------------------------------------ footer */
+.site-footer { padding: 8px 12px 16px; text-align: center; font: 11px var(--f-ui); color: var(--footer-muted); }
+.site-footer p { margin: 0; }
+.site-footer .heart { color: var(--footer-heart); }
+.site-footer .creator { color: var(--footer-author); font-weight: 600; text-shadow: 0 0 8px var(--footer-glow); text-decoration: none; }
+.site-footer .creator:hover { text-decoration: underline; }
+
+/* ------------------------------------------------------------ layar pembuka */
+.splash {
+  position: fixed; inset: 0; z-index: var(--z-splash); display: grid; place-items: center; overflow: hidden;
+  color: var(--teks); background-color: var(--latar-solid);
+  background-image:
+    linear-gradient(var(--splash-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--splash-grid) 1px, transparent 1px);
+  background-size: 44px 44px;
+  opacity: 1; visibility: visible; transition: opacity .35s ease, visibility .35s ease;
+}
+.splash.splash-hilang { opacity: 0; visibility: hidden; pointer-events: none; }
+.splash-content { width: min(320px, calc(100% - 40px)); display: grid; justify-items: center; gap: var(--sp-3); text-align: center; }
+.splash-content img { width: 68px; height: 68px; border-radius: 16px; box-shadow: 0 0 28px var(--glow-aksen); }
+.splash-arab { color: var(--aksen); font-family: var(--f-arab); font-size: 1.3rem; }
+.splash-content strong { font-size: 1.05rem; font-weight: 600; }
+.splash-status { color: var(--redup); font-size: .76rem; }
+.splash-line { width: 156px; height: 2px; overflow: hidden; background: var(--tepi-aksen); }
+.splash-line i { display: block; width: 42%; height: 100%; background: var(--aksen); animation: splash-load 1.5s linear infinite; will-change: transform; }
+@keyframes splash-load { from { transform: translateX(-100%); } to { transform: translateX(340%); } }

@@ -1,0 +1,43 @@
+/* ============================================================
+   07-player.css — Kartu ayat terpilih & pemutar audio (menempel di bawah layar)
+   ============================================================ */
+
+/* ------------------------------------------------------------ kartu ayat */
+.ayat-sheet {
+  position: fixed; z-index: var(--z-sheet); left: 50%; transform: translateX(-50%);
+  bottom: calc(var(--player-h) + 12px + env(safe-area-inset-bottom));
+  width: min(560px, calc(100% - 24px)); padding: 12px 14px; border-radius: 16px;
+  background: var(--kaca); border: 1px solid var(--tepi-aksen);
+  backdrop-filter: blur(20px); box-shadow: var(--bayang); animation: naik .18s ease;
+}
+@keyframes naik { from { opacity: 0; transform: translate(-50%, 8px); } to { opacity: 1; transform: translate(-50%, 0); } }
+.as-head { display: flex; align-items: center; justify-content: space-between; font-size: .85rem; color: var(--teks-lembut); }
+.as-text { margin: 6px 0 10px; max-height: 28vh; overflow-y: auto; font-size: .85rem; line-height: 1.6; color: var(--teks); }
+.as-text:empty { display: none; }
+.as-act { display: flex; flex-wrap: wrap; gap: 6px; }
+
+/* ------------------------------------------------------------ pemutar audio */
+.player {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: var(--z-player); padding-bottom: env(safe-area-inset-bottom);
+  background: var(--kaca); backdrop-filter: blur(20px); border-top: 1px solid var(--tepi-aksen);
+  box-shadow: 0 -6px 24px rgba(0, 0, 0, .1);
+}
+.pl-progress { height: 3px; background: var(--tepi); }
+.pl-progress i { display: block; height: 100%; width: 0; background: var(--g1); transition: width .2s linear; }
+.pl-main { display: flex; align-items: center; gap: 10px; max-width: 760px; margin: 0 auto; padding: 8px 14px; }
+.pl-ctrl { display: flex; align-items: center; gap: 2px; }
+.pl-ctrl .icon-btn.utama { width: 42px; height: 42px; background: var(--g1); color: #fff; box-shadow: 0 3px 12px var(--glow-aksen); }
+.pl-ctrl .icon-btn.utama:hover { background: var(--g2); color: #fff; }
+.pl-status { flex: 1; min-width: 0; display: flex; flex-direction: column; line-height: 1.25; }
+.pl-status strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: .8rem; font-weight: 600; color: var(--teks); }
+.pl-status small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--fs-xs); color: var(--redup); }
+#plMore .ik { transition: transform .2s; }
+#plMore[aria-expanded="true"] .ik { transform: rotate(180deg); }
+
+/* Panel opsi audio */
+.pl-panel {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 10px 14px;
+  max-width: 760px; max-height: 44vh; margin: 0 auto; padding: 4px 16px 14px; overflow-y: auto;
+}
+.pl-panel label, .rentang label { display: flex; flex-direction: column; gap: 4px; font-size: .68rem; font-weight: 600; letter-spacing: .04em; color: var(--teks-lembut); }
+.rentang { grid-column: 1 / -1; display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 10px; }

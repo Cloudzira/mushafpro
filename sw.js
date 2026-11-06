@@ -1,63 +1,128 @@
-/* Mushaf Tahfidz Pro — service worker
-  • Cangkang aplikasi (HTML/CSS/JS): JARINGAN DULU, cache hanya sebagai cadangan luring.
-     Dengan begitu pembaruan kode selalu langsung terpakai (tidak ada versi lama yang "menempel").
-   • Data halaman, font, terjemahan: cache-first (tidak berubah) → bisa dibaca luring setelah dibuka sekali
-   • Audio (everyayah.com) & Firebase: tidak disentuh */
-const VERSION = "v8";
+/**
+ * sw.js — Service worker Mushaf Tahfidz Pro.
+ *
+ * Tugasnya: membuat aplikasi tetap bisa dibuka tanpa internet.
+ *
+ *  • Berkas aplikasi (HTML/CSS/JS): JARINGAN DULU, cache hanya cadangan luring.
+ *    Dengan begitu pembaruan kode langsung terpakai (tidak ada versi lama yang "menempel").
+ *  • Data halaman, font, terjemahan: CACHE DULU (isinya tidak berubah) →
+ *    bisa dibaca luring setelah dibuka sekali.
+ *  • Audio (everyayah.com) & Firebase: tidak disentuh, langsung ke jaringan.
+ *
+ * PENTING: bila menambah/menghapus berkas CSS atau JS, perbarui daftar SHELL
+ * di bawah dan naikkan VERSION agar cache lama dibersihkan.
+ */
+const VERSION = "v9";
 const SHELL_CACHE = "mushaf-shell-" + VERSION;
 const DATA_CACHE = "mushaf-data-" + VERSION;
-const SHELL = ["./", "index.html", "style.css", "app.js", "manifest.webmanifest", "icon.svg"];
 
+const SHELL = [
+  "./",
+  "index.html",
+  "manifest.webmanifest",
+  "icon.svg",
+  "css/01-tokens.css",
+  "css/02-base.css",
+  "css/03-layout.css",
+  "css/04-mushaf.css",
+  "css/05-components.css",
+  "css/06-dialogs.css",
+  "css/07-player.css",
+  "css/08-responsive.css",
+  "js/audio/player.js",
+  "js/audio/sources.js",
+  "js/config.js",
+  "js/core/dom.js",
+  "js/core/events.js",
+  "js/core/logger.js",
+  "js/core/media.js",
+  "js/core/state.js",
+  "js/core/storage.js",
+  "js/core/utils.js",
+  "js/data/juz.js",
+  "js/data/reciters.js",
+  "js/data/surah.js",
+  "js/main.js",
+  "js/reader/ayat-sheet.js",
+  "js/reader/fit.js",
+  "js/reader/navigation.js",
+  "js/reader/page-model.js",
+  "js/reader/renderer.js",
+  "js/reader/selection.js",
+  "js/reader/viewport.js",
+  "js/services/cloud.js",
+  "js/services/pwa.js",
+  "js/services/quran-api.js",
+  "js/ui/bookmarks.js",
+  "js/ui/chrome.js",
+  "js/ui/navigator.js",
+  "js/ui/progress.js",
+  "js/ui/settings.js",
+  "js/ui/shortcuts.js",
+  "js/ui/theme.js",
+  "js/ui/toast.js",
+  "js/ui/toolbar.js"
+];
+
+// Server data yang aman di-cache selamanya
 const DATA_HOSTS = [
   "raw.githubusercontent.com",
   "cdn.jsdelivr.net",
   "api.quran.com",
   "fonts.googleapis.com",
-  "fonts.gstatic.com",
-  "cdnjs.cloudflare.com"
+  "fonts.gstatic.com"
 ];
 
-self.addEventListener("install", e => {
-  // cache: "reload" → ambil dari jaringan, bukan dari cache HTTP browser
-  e.waitUntil(
+/* Pemasangan: simpan seluruh berkas aplikasi ke cache */
+self.addEventListener("install", event => {
+  event.waitUntil(
     caches.open(SHELL_CACHE)
-      .then(c => Promise.all(SHELL.map(u => fetch(new Request(u, { cache: "reload" })).then(r => { if (r.ok) return c.put(u, r); }).catch(() => {}))))
+      .then(cache => Promise.all(SHELL.map(url =>
+        // cache: "reload" → ambil dari jaringan, bukan dari cache HTTP browser
+        fetch(new Request(url, { cache: "reload" }))
+          .then(res => { if (res.ok) return cache.put(url, res); })
+          .catch(() => {})
+      )))
       .then(() => self.skipWaiting())
   );
 });
 
-self.addEventListener("activate", e => {
-  e.waitUntil(
+/* Aktivasi: hapus cache versi lama */
+self.addEventListener("activate", event => {
+  event.waitUntil(
     caches.keys()
-      .then(keys => Promise.all(keys.filter(k => k.startsWith("mushaf-") && k !== SHELL_CACHE && k !== DATA_CACHE).map(k => caches.delete(k))))
+      .then(keys => Promise.all(keys
+        .filter(k => k.startsWith("mushaf-") && k !== SHELL_CACHE && k !== DATA_CACHE)
+        .map(k => caches.delete(k))))
       .then(() => self.clients.claim())
   );
 });
 
-const cacheable = res => res && (res.ok || res.type === "opaque");
+const isCacheable = res => res && (res.ok || res.type === "opaque");
 
-self.addEventListener("fetch", e => {
-  const req = e.request;
+/* Setiap permintaan jaringan */
+self.addEventListener("fetch", event => {
+  const req = event.request;
   if (req.method !== "GET") return;
   const url = new URL(req.url);
 
-  // data eksternal: cache-first
+  // Data eksternal: cache dulu
   if (DATA_HOSTS.includes(url.hostname)) {
-    e.respondWith(
+    event.respondWith(
       caches.open(DATA_CACHE).then(async cache => {
         const hit = await cache.match(req);
         if (hit) return hit;
         const res = await fetch(req);
-        if (cacheable(res)) cache.put(req, res.clone());
+        if (isCacheable(res)) cache.put(req, res.clone());
         return res;
       })
     );
     return;
   }
 
-  // cangkang aplikasi: jaringan dulu (selalu revalidasi), cache sebagai cadangan luring
+  // Berkas aplikasi: jaringan dulu, cache sebagai cadangan luring
   if (url.origin === self.location.origin) {
-    e.respondWith(
+    event.respondWith(
       caches.open(SHELL_CACHE).then(async cache => {
         try {
           const res = await fetch(req, { cache: "no-cache" });
@@ -71,5 +136,5 @@ self.addEventListener("fetch", e => {
       })
     );
   }
-  // selain itu (audio, Firebase, dll.): langsung ke jaringan
+  // Selain itu (audio, Firebase, dll.): langsung ke jaringan
 });

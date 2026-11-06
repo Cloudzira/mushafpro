@@ -1,0 +1,132 @@
+/* ============================================================
+   06-dialogs.css — Dialog (<dialog class="modal">) dan isinya
+   Di layar kecil dialog tampil sebagai lembar dari bawah (bottom sheet).
+   ============================================================ */
+
+.modal {
+  width: min(460px, calc(100% - 24px)); max-height: min(86vh, 720px); padding: 0; overflow: visible;
+  border: 0; background: transparent; color: var(--teks);
+}
+.modal::backdrop { background: rgba(0, 0, 0, .55); backdrop-filter: blur(6px); }
+.modal[open] { display: flex; animation: muncul .16s ease; }
+@keyframes muncul { from { opacity: 0; transform: translateY(8px) scale(.98); } to { opacity: 1; transform: none; } }
+
+#dlgAbout { width: min(540px, calc(100% - 24px)); }
+
+.modal-box {
+  display: flex; flex-direction: column; width: 100%; max-height: min(86vh, 720px); overflow: hidden;
+  background: var(--modal-bg); border: 1px solid var(--tepi-aksen); border-radius: var(--r-lg); box-shadow: var(--bayang);
+}
+.modal-head { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid var(--tepi); }
+.modal-head h2 { margin: 0; font-size: 1rem; font-weight: 600; color: var(--teks); }
+.modal-body { flex: 1; min-height: 0; padding: 14px 18px; overflow-y: auto; }
+.modal-foot { display: flex; justify-content: flex-end; padding: 12px 18px; border-top: 1px solid var(--tepi); }
+
+.sub { margin: 14px 0 8px; font-size: .74rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--teks-lembut); }
+.sub small { text-transform: none; letter-spacing: 0; font-weight: 500; opacity: .75; }
+.catatan { margin: 8px 0 0; font-size: .74rem; line-height: 1.55; color: var(--redup); }
+
+/* ------------------------------------------------------------ tab navigasi */
+.tabs { display: flex; gap: 4px; padding: 8px 14px 0; border-bottom: 1px solid var(--tepi); }
+.tabs button {
+  flex: 1; margin-bottom: -1px; padding: 10px 8px; border: 0; border-bottom: 2px solid transparent;
+  background: transparent; color: var(--redup); font-size: .8rem; font-weight: 600;
+  transition: color var(--t-fast);
+}
+.tabs button:hover { color: var(--teks); }
+.tabs button[aria-selected="true"] { color: var(--aksen); border-bottom-color: var(--aksen); }
+
+.search { position: relative; display: block; margin-bottom: 10px; }
+.search .ik { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: var(--redup); }
+.search input { width: 100%; padding-left: 36px; }
+
+.grid-juz { display: grid; grid-template-columns: repeat(5, 1fr); gap: var(--sp-2); }
+.grid-juz button {
+  padding: 12px 0; border: 1px solid var(--tepi); border-radius: var(--r-md); background: var(--kaca-halus);
+  color: var(--teks-lembut); font-size: .85rem; font-weight: 600;
+  transition: border-color var(--t-fast), color var(--t-fast);
+}
+.grid-juz button:hover { border-color: var(--aksen); color: var(--aksen); }
+.grid-juz button.aktif { background: var(--g1); color: #fff; border-color: transparent; }
+
+.form-ayat { display: grid; grid-template-columns: 1fr 90px; gap: 10px; align-items: end; }
+.form-halaman { display: grid; gap: 10px; }
+.form-ayat label, .form-halaman label { display: flex; flex-direction: column; gap: 4px; font-size: .68rem; font-weight: 600; color: var(--teks-lembut); }
+.form-ayat .btn-utama { grid-column: 1 / -1; justify-content: center; padding: 11px; }
+.form-halaman .btn-utama { justify-content: center; padding: 11px; }
+
+/* ------------------------------------------------------------ progres hafalan */
+.prg-total { padding: 4px 0 6px; }
+.prg-angka { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: var(--sp-2); }
+.prg-angka strong { font-size: 1.8rem; font-weight: 700; color: var(--aksen); }
+.prg-angka span { font-size: .78rem; color: var(--redup); }
+.juz-list .item { padding: 8px 12px; gap: 10px; }
+.juz-list .nm { gap: 5px; }
+.juz-list .bar { height: 5px; }
+.juz-list .cnt { flex: none; font-size: var(--fs-xs); color: var(--redup); font-variant-numeric: tabular-nums; }
+
+/* ------------------------------------------------------------ pengaturan */
+.set-card { margin-bottom: var(--sp-3); padding: 14px 16px; border: 1px solid var(--tepi); border-radius: var(--r-md); background: var(--kaca-halus); }
+.set-card .sub { margin-top: 0; }
+.set-body .grp { margin: 0 0 14px; padding: 0; border: 0; }
+.set-body .grp:last-child { margin-bottom: 0; }
+.set-body legend { padding: 0; margin-bottom: var(--sp-2); font-size: .8rem; font-weight: 600; color: var(--teks); }
+.radio-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+.radio-row label { position: relative; }
+.radio-row input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+.radio-row span {
+  display: block; padding: 10px 4px; text-align: center; border: 1px solid var(--tepi); border-radius: 10px;
+  background: var(--modal-bg); color: var(--teks-lembut); font-size: var(--fs-sm); font-weight: 600;
+}
+.radio-row input:checked + span { background: var(--g1); color: #fff; border-color: transparent; }
+.radio-row input:focus-visible + span { outline: 2px solid var(--aksen); outline-offset: 2px; }
+.row { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: .82rem; font-weight: 500; }
+.row output { color: var(--redup); font-variant-numeric: tabular-nums; }
+input[type="range"] { width: 100%; padding: 0; min-height: 0; border: 0; background: none; accent-color: var(--g1); }
+.check { display: flex; gap: 10px; align-items: flex-start; padding: 9px 0; font-size: .82rem; line-height: 1.45; cursor: pointer; }
+.check + .check { border-top: 1px solid var(--tepi); }
+.check input { flex: none; width: 18px; height: 18px; margin-top: 1px; accent-color: var(--g1); }
+.check small { color: var(--redup); }
+.btn-row { display: flex; flex-wrap: wrap; gap: var(--sp-2); }
+
+/* ------------------------------------------------------------ tentang aplikasi */
+.about-hero { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
+.about-hero img { width: 56px; height: 56px; border-radius: 14px; box-shadow: 0 4px 14px var(--glow-aksen); }
+.about-hero div { display: flex; flex-direction: column; gap: 2px; }
+.about-hero strong { font-size: 1.05rem; font-weight: 700; }
+.about-hero span { font-size: var(--fs-xs); color: var(--redup); }
+.about-intro { margin: 0 0 8px; font-size: .86rem; line-height: 1.65; color: var(--teks); }
+.about-section { padding-bottom: 6px; }
+.about-section .sub { margin-top: 16px; }
+
+.feature-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 10px; }
+.feature { display: flex; gap: 10px; padding: 12px; border: 1px solid var(--tepi); border-radius: var(--r-md); background: var(--kaca-halus); }
+.feature .ik { width: 20px; height: 20px; margin-top: 2px; color: var(--aksen); }
+.feature b { display: block; margin-bottom: 2px; font-size: .82rem; font-weight: 600; }
+.feature span { font-size: .74rem; line-height: 1.5; color: var(--redup); }
+
+.about-steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; counter-reset: langkah; }
+.about-steps li { display: flex; gap: 10px; font-size: .8rem; line-height: 1.55; color: var(--redup); counter-increment: langkah; }
+.about-steps li::before {
+  content: counter(langkah); flex: none; width: 22px; height: 22px; margin-top: 1px; display: grid; place-items: center;
+  border-radius: 50%; background: var(--g1); color: #fff; font-size: .7rem; font-weight: 700;
+}
+.about-steps b { color: var(--teks); font-weight: 600; }
+
+.kbd-list { margin: 0; }
+.kbd-list > div { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-3); padding: 7px 0; border-bottom: 1px solid var(--tepi); }
+.kbd-list > div:last-child { border-bottom: 0; }
+.kbd-list dt { flex: none; display: flex; gap: 4px; }
+.kbd-list dd { margin: 0; text-align: right; font-size: .76rem; color: var(--redup); }
+
+.about-list { margin: 0; padding-left: 18px; font-size: .78rem; line-height: 1.6; color: var(--redup); }
+.about-list li + li { margin-top: 4px; }
+
+.about-social { display: flex; flex-wrap: wrap; gap: var(--sp-2); }
+.about-social a {
+  display: inline-flex; align-items: center; gap: var(--sp-2); padding: 9px 14px;
+  border: 1px solid var(--tepi); border-radius: var(--r-pill); background: var(--kaca-halus); color: var(--teks-lembut);
+  font-size: var(--fs-sm); font-weight: 600; text-decoration: none;
+  transition: color var(--t-fast), border-color var(--t-fast), transform var(--t-fast);
+}
+.about-social a:hover { color: var(--aksen); border-color: var(--tepi-aksen); transform: translateY(-2px); }

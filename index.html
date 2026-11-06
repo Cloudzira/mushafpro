@@ -5,22 +5,39 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Mushaf Tahfidz Pro</title>
   <meta name="description" content="Mushaf Madinah 604 halaman untuk menghafal Al-Qur'an: mode tutup ayat, audio per ayat dengan pengulangan, penanda, dan pelacak hafalan.">
+  <meta name="application-name" content="Mushaf Tahfidz Pro">
   <meta name="theme-color" content="#191816">
   <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="Mushaf">
+
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="icon.svg">
+
+  <!-- Percepat koneksi ke server data & font -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Reem+Kufi:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+
+  <!-- Gaya tampilan (urutan penting: dari dasar ke khusus) -->
+  <link rel="stylesheet" href="css/01-tokens.css">
+  <link rel="stylesheet" href="css/02-base.css">
+  <link rel="stylesheet" href="css/03-layout.css">
+  <link rel="stylesheet" href="css/04-mushaf.css">
+  <link rel="stylesheet" href="css/05-components.css">
+  <link rel="stylesheet" href="css/06-dialogs.css">
+  <link rel="stylesheet" href="css/07-player.css">
+  <link rel="stylesheet" href="css/08-responsive.css">
 </head>
 <body>
 
-  <!-- Sprite ikon -->
+  <noscript><p class="noscript">Mushaf Tahfidz Pro membutuhkan JavaScript. Aktifkan JavaScript di browser Anda, lalu muat ulang halaman ini.</p></noscript>
+
+  <!-- ============================================================
+       Sprite ikon. Dipakai lewat <svg class="ik"><use href="#i-NAMA"/></svg>
+       ============================================================ -->
   <svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true" focusable="false">
     <symbol id="i-book" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></symbol>
     <symbol id="i-eye-off" viewBox="0 0 24 24"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><path d="M1 1l22 22"/></symbol>
@@ -54,13 +71,23 @@
     <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.5 9a9 9 0 0 1 14.8-3.4L23 10M1 14l4.7 4.4A9 9 0 0 0 20.5 15"/></symbol>
     <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></symbol>
     <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 11v5M12 8h.01"/></symbol>
+    <symbol id="i-corner" viewBox="0 0 30 30"><path d="M2 28 Q2 2 28 2"/><path d="M2 2 H12 M2 2 V12"/><circle cx="9" cy="9" r="2.6" fill="currentColor" stroke="none"/></symbol>
+    <symbol id="i-instagram" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><path d="M17.5 6.5h.01"/></symbol>
+    <symbol id="i-tiktok" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></symbol>
+    <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></symbol>
+    <symbol id="i-whatsapp" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8z"/></symbol>
+    <symbol id="i-cloud" viewBox="0 0 24 24"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></symbol>
+    <symbol id="i-hash" viewBox="0 0 24 24"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></symbol>
   </svg>
 
   <a class="skip" href="#teks">Lewati ke teks mushaf</a>
 
+  <!-- ============================================================
+       Layar pembuka
+       ============================================================ -->
   <div id="splash" class="splash" role="status" aria-live="polite">
     <div class="splash-content">
-      <img src="icon.svg" alt="" width="64" height="64">
+      <img src="icon.svg" alt="" width="68" height="68">
       <span class="splash-arab" lang="ar" dir="rtl">مصحف للحفظ</span>
       <strong>Mushaf Tahfidz Pro</strong>
       <span class="splash-status">Menyiapkan mushaf</span>
@@ -68,11 +95,16 @@
     </div>
   </div>
 
-  <!-- Bilah atas -->
+  <!-- ============================================================
+       Bilah atas: nama aplikasi, info, akun
+       ============================================================ -->
   <header class="topbar">
     <div class="brand">
-      <span class="arab">مصحف للحفظ</span>
-      <small>Mushaf Tahfidz Pro</small>
+      <img class="brand-logo" src="icon.svg" alt="" width="34" height="34">
+      <div class="brand-text">
+        <span class="arab" lang="ar">مصحف للحفظ</span>
+        <small>Mushaf Tahfidz Pro</small>
+      </div>
     </div>
     <div class="header-actions">
       <button id="btnAbout" class="about-btn" type="button" aria-label="Tentang aplikasi" title="Tentang aplikasi">
@@ -81,37 +113,51 @@
       <div class="auth-box">
         <svg class="ik" aria-hidden="true"><use href="#i-user"/></svg>
         <span id="userStatus">Tamu</span>
-        <button id="authBtn" type="button">Masuk</button>
+        <button id="authBtn" type="button" title="Masuk dengan Google untuk menyinkronkan data">Masuk</button>
       </div>
     </div>
   </header>
 
-  <!-- Toolbar -->
+  <!-- Posisi bacaan dalam 604 halaman (terisi dari kanan, seperti membuka mushaf) -->
+  <div id="readProgress" class="read-progress" role="progressbar" aria-label="Posisi halaman dalam mushaf"
+       aria-valuemin="1" aria-valuemax="604" aria-valuenow="1"><i id="readBar"></i></div>
+
+  <!-- ============================================================
+       Toolbar: mode hafalan · navigasi · aksi
+       ============================================================ -->
   <nav class="toolbar" aria-label="Kontrol mushaf">
+
+    <!-- Mode hafalan -->
     <div class="seg" id="modeGroup" role="radiogroup" aria-label="Mode hafalan">
-        <button type="button" role="radio" data-mode="normal" aria-checked="true" title="Mode Normal (1)">
+      <button type="button" role="radio" data-mode="normal" aria-checked="true" title="Tampilkan semua kata (tombol 1)">
         <svg class="ik" aria-hidden="true"><use href="#i-book"/></svg><span class="lbl">Normal</span>
       </button>
-      <button type="button" role="radio" data-mode="blur" aria-checked="false" title="Tutup semua kata (2)">
+      <button type="button" role="radio" data-mode="blur" aria-checked="false" title="Tutup semua kata (tombol 2)">
         <svg class="ik" aria-hidden="true"><use href="#i-eye-off"/></svg><span class="lbl">Tutup</span>
       </button>
-      <button type="button" role="radio" data-mode="first" aria-checked="false" title="Hanya kata pertama tiap ayat (3)">
+      <button type="button" role="radio" data-mode="first" aria-checked="false" title="Hanya kata pertama tiap ayat (tombol 3)">
         <svg class="ik" aria-hidden="true"><use href="#i-type"/></svg><span class="lbl">Kata awal</span>
       </button>
     </div>
 
+    <!-- Navigasi halaman (mushaf dibaca dari kanan: tombol kiri = halaman berikutnya) -->
     <div class="navgrup">
       <button id="pgNext" class="pg-btn" type="button" title="Halaman berikutnya (←)" aria-label="Halaman berikutnya"><svg class="ik" aria-hidden="true"><use href="#i-left"/></svg></button>
-      <button id="btnNavOpen" class="chip" type="button" title="Navigasi surat, juz, dan ayat (/)">
+      <button id="btnNavOpen" class="chip" type="button" title="Navigasi surat, juz, ayat, dan halaman (/)">
         <svg class="ik" aria-hidden="true"><use href="#i-compass"/></svg>
         <span id="navLabel">Pilih surat</span>
       </button>
       <button id="pgPrev" class="pg-btn" type="button" title="Halaman sebelumnya (→)" aria-label="Halaman sebelumnya"><svg class="ik" aria-hidden="true"><use href="#i-right"/></svg></button>
     </div>
 
+    <!-- Aksi cepat + menu lainnya -->
     <div class="aksi">
-      <button id="btnBookmark" class="icon-btn" type="button" aria-pressed="false" title="Simpan penanda halaman (B)"><svg class="ik" aria-hidden="true"><use href="#i-bookmark"/></svg><span class="sr">Penanda halaman ini</span></button>
-      <button id="btnMemo" class="icon-btn" type="button" aria-pressed="false" title="Tandai halaman ini sudah hafal (M)"><svg class="ik" aria-hidden="true"><use href="#i-check"/></svg><span class="sr">Tandai hafal</span></button>
+      <button id="btnBookmark" class="icon-btn has-label" type="button" aria-pressed="false" aria-label="Penanda halaman ini" title="Simpan penanda halaman (B)">
+        <svg class="ik" aria-hidden="true"><use href="#i-bookmark"/></svg><span class="lbl-wide">Penanda</span>
+      </button>
+      <button id="btnMemo" class="icon-btn has-label" type="button" aria-pressed="false" aria-label="Tandai halaman ini hafal" title="Tandai halaman ini sudah hafal (M)">
+        <svg class="ik" aria-hidden="true"><use href="#i-check"/></svg><span class="lbl-wide">Hafal</span>
+      </button>
       <button id="btnMoreActions" class="icon-btn" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="actionItems" aria-label="Menu lainnya" title="Menu lainnya">
         <svg class="ik" aria-hidden="true"><use href="#i-more"/></svg>
       </button>
@@ -125,82 +171,48 @@
     </div>
   </nav>
 
-  <!-- Halaman mushaf -->
+  <!-- ============================================================
+       Halaman mushaf
+       ============================================================ -->
   <main id="wrap">
     <section class="frame" id="frame" aria-label="Halaman mushaf">
-      <div class="edge e-top"></div><div class="edge e-bottom"></div>
-      <div class="edge e-left"></div><div class="edge e-right"></div>
-      <svg class="corner c1" viewBox="0 0 30 30" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M2 28 Q2 2 28 2"/><path d="M2 2 H12 M2 2 V12"/><circle cx="9" cy="9" r="2.6" fill="currentColor" stroke="none"/></svg>
-      <svg class="corner c2" viewBox="0 0 30 30" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M2 28 Q2 2 28 2"/><path d="M2 2 H12 M2 2 V12"/><circle cx="9" cy="9" r="2.6" fill="currentColor" stroke="none"/></svg>
-      <svg class="corner c3" viewBox="0 0 30 30" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M2 28 Q2 2 28 2"/><path d="M2 2 H12 M2 2 V12"/><circle cx="9" cy="9" r="2.6" fill="currentColor" stroke="none"/></svg>
-      <svg class="corner c4" viewBox="0 0 30 30" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M2 28 Q2 2 28 2"/><path d="M2 2 H12 M2 2 V12"/><circle cx="9" cy="9" r="2.6" fill="currentColor" stroke="none"/></svg>
+      <!-- Hiasan sudut -->
+      <svg class="corner c1" viewBox="0 0 30 30" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><use href="#i-corner"/></svg>
+      <svg class="corner c2" viewBox="0 0 30 30" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><use href="#i-corner"/></svg>
+      <svg class="corner c3" viewBox="0 0 30 30" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><use href="#i-corner"/></svg>
+      <svg class="corner c4" viewBox="0 0 30 30" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><use href="#i-corner"/></svg>
 
       <div id="kepala"><span id="kSurah"></span><span id="kJuz"></span></div>
-      <div id="teks" lang="ar" dir="rtl"></div>
+      <!-- Teks mushaf diisi oleh js/reader/renderer.js -->
+      <div id="teks" lang="ar" dir="rtl" tabindex="-1"></div>
       <div id="kaki"><span id="kNo"></span></div>
     </section>
-
   </main>
 
   <footer class="site-footer">
     <p>Crafted with <span class="heart">♥</span> by <a class="creator" href="https://kurniapedia.my.id" target="_blank" rel="noopener noreferrer">Kurniapedia</a> 2026</p>
   </footer>
 
-  <dialog id="dlgAbout" class="modal" aria-labelledby="aboutTitle">
-    <div class="modal-box">
-      <header class="modal-head">
-        <h2 id="aboutTitle">Tentang Mushaf Tahfidz Pro</h2>
-        <button class="icon-btn kecil" type="button" data-close aria-label="Tutup"><svg class="ik" aria-hidden="true"><use href="#i-x"/></svg></button>
-      </header>
-      <div class="modal-body about-body">
-        <p class="about-intro">Mushaf Madinah 604 halaman untuk membaca, menjaga, dan menguatkan hafalan Al-Qur'an.</p>
-        <section class="about-section">
-          <h3 class="sub">Panduan penggunaan</h3>
-          <ul class="about-list">
-            <li>Geser ke kiri atau kanan pada halaman untuk berpindah halaman.</li>
-            <li>Pilih surat, juz, atau ayat melalui tombol navigasi.</li>
-            <li>Gunakan mode Tutup atau Kata awal untuk latihan hafalan; ketuk ayat untuk membuka dan melihat terjemahan.</li>
-            <li>Ketuk tanda akhir ayat untuk memutar, mengulang, atau melatih lantunan.</li>
-            <li>Simpan penanda dan progres hafalan dari menu Aksi halaman.</li>
-          </ul>
-        </section>
-        <section class="about-section">
-          <h3 class="sub">Referensi</h3>
-          <ul class="about-list sumber-list">
-            <li>Teks dan font mushaf: QCF v4, Mushaf Madinah.</li>
-            <li>Peta halaman dan terjemahan Indonesia Kemenag: Quran.com API.</li>
-            <li>Audio murattal: EveryAyah.com.</li>
-          </ul>
-        </section>
-        <section class="about-section">
-          <h3 class="sub">Kurniapedia</h3>
-          <div class="about-social" aria-label="Media sosial Kurniapedia">
-            <a href="https://instagram.com/kurniapedia" target="_blank" rel="noopener noreferrer" aria-label="Instagram Kurniapedia" title="Instagram"><i class="fa-brands fa-instagram" aria-hidden="true"></i></a>
-            <a href="https://tiktok.com/@kurniapedia" target="_blank" rel="noopener noreferrer" aria-label="TikTok Kurniapedia" title="TikTok"><i class="fa-brands fa-tiktok" aria-hidden="true"></i></a>
-            <a href="https://kurniapedia.my.id" target="_blank" rel="noopener noreferrer" aria-label="Website Kurniapedia (kurniapedia.my.id)" title="kurniapedia.my.id"><i class="fa-solid fa-globe" aria-hidden="true"></i></a>
-            <a href="https://wa.me/+6285870906050" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp Kurniapedia" title="WhatsApp"><i class="fa-brands fa-whatsapp" aria-hidden="true"></i></a>
-          </div>
-        </section>
-      </div>
-    </div>
-  </dialog>
-
-  <!-- Kartu ayat terpilih -->
+  <!-- ============================================================
+       Kartu ayat terpilih (terjemahan & tombol putar)
+       ============================================================ -->
   <aside id="ayatSheet" class="ayat-sheet" hidden aria-label="Ayat terpilih">
     <div class="as-head">
       <strong id="asKey">QS</strong>
-      <button id="asClose" class="icon-btn kecil" type="button" aria-label="Tutup"><svg class="ik" aria-hidden="true"><use href="#i-x"/></svg></button>
+      <button id="asClose" class="icon-btn kecil" type="button" aria-label="Tutup kartu ayat"><svg class="ik" aria-hidden="true"><use href="#i-x"/></svg></button>
     </div>
     <p id="asText" class="as-text"></p>
     <div class="as-act">
       <button id="asPlay" type="button"><svg class="ik f" aria-hidden="true"><use href="#i-play"/></svg>Putar ayat</button>
-      <button id="asDrill" type="button" title="Putar ayat, beri jeda sepanjang ayat agar Anda melantunkannya, ulang 5x"><svg class="ik" aria-hidden="true"><use href="#i-target"/></svg>Latih hafalan</button>
+      <button id="asDrill" type="button" title="Putar ayat, beri jeda sepanjang ayat agar Anda melantunkannya, ulang 5×"><svg class="ik" aria-hidden="true"><use href="#i-target"/></svg>Latih hafalan</button>
       <button id="asFrom" type="button"><svg class="ik" aria-hidden="true"><use href="#i-next"/></svg>Lanjut sampai akhir surat</button>
     </div>
   </aside>
 
-  <!-- Pemutar audio -->
-  <footer class="player" id="player" aria-label="Pemutar audio">
+  <!-- ============================================================
+       Pemutar audio
+       ============================================================ -->
+  <div class="player" id="player" role="region" aria-label="Pemutar audio">
     <div class="pl-progress" aria-hidden="true"><i id="plBar"></i></div>
     <div class="pl-main">
       <div class="pl-ctrl">
@@ -213,8 +225,9 @@
         <strong id="plTitle">Murattal</strong>
         <small id="plSub">Siap diputar</small>
       </div>
-      <button id="plMore" class="icon-btn" type="button" aria-expanded="false" aria-controls="plPanel" aria-label="Opsi audio"><svg class="ik" aria-hidden="true"><use href="#i-up"/></svg></button>
+      <button id="plMore" class="icon-btn" type="button" aria-expanded="false" aria-controls="plPanel" aria-label="Opsi audio" title="Opsi audio: qari, ulangan, kecepatan"><svg class="ik" aria-hidden="true"><use href="#i-up"/></svg></button>
     </div>
+
     <div class="pl-panel" id="plPanel" hidden>
       <label>Qari
         <select id="selQari"></select>
@@ -257,9 +270,89 @@
         </select>
       </label>
     </div>
-  </footer>
+  </div>
 
-  <!-- Dialog: Navigasi -->
+  <!-- ============================================================
+       Dialog: Tentang aplikasi
+       ============================================================ -->
+  <dialog id="dlgAbout" class="modal" aria-labelledby="aboutTitle">
+    <div class="modal-box">
+      <header class="modal-head">
+        <h2 id="aboutTitle">Tentang aplikasi</h2>
+        <button class="icon-btn kecil" type="button" data-close aria-label="Tutup"><svg class="ik" aria-hidden="true"><use href="#i-x"/></svg></button>
+      </header>
+      <div class="modal-body about-body">
+
+        <div class="about-hero">
+          <img src="icon.svg" alt="" width="56" height="56">
+          <div>
+            <strong>Mushaf Tahfidz Pro</strong>
+            <span>Versi <span id="appVersion"></span></span>
+          </div>
+        </div>
+        <p class="about-intro">Mushaf Madinah 604 halaman untuk membaca, menjaga, dan menguatkan hafalan Al-Qur'an, langsung dari browser atau terpasang seperti aplikasi.</p>
+
+        <section class="about-section">
+          <h3 class="sub">Fitur utama</h3>
+          <ul class="feature-grid">
+            <li class="feature"><svg class="ik" aria-hidden="true"><use href="#i-book"/></svg><div><b>Mushaf Madinah</b><span>604 halaman dengan font QCF v4 yang presisi.</span></div></li>
+            <li class="feature"><svg class="ik" aria-hidden="true"><use href="#i-eye-off"/></svg><div><b>Mode hafalan</b><span>Tutup semua kata, atau tampilkan kata awal ayat saja.</span></div></li>
+            <li class="feature"><svg class="ik" aria-hidden="true"><use href="#i-play"/></svg><div><b>Audio per ayat</b><span>16 qari, pengulangan, kecepatan, dan jeda "giliran Anda".</span></div></li>
+            <li class="feature"><svg class="ik" aria-hidden="true"><use href="#i-chart"/></svg><div><b>Penanda &amp; progres</b><span>Simpan halaman, tandai hafal, pantau per juz.</span></div></li>
+            <li class="feature"><svg class="ik" aria-hidden="true"><use href="#i-cloud"/></svg><div><b>Sinkron antar perangkat</b><span>Masuk dengan Google agar data ikut ke mana-mana.</span></div></li>
+            <li class="feature"><svg class="ik" aria-hidden="true"><use href="#i-download"/></svg><div><b>Bisa dipasang</b><span>Halaman yang pernah dibuka tetap terbaca tanpa internet.</span></div></li>
+          </ul>
+        </section>
+
+        <section class="about-section">
+          <h3 class="sub">Panduan penggunaan</h3>
+          <ol class="about-steps">
+            <li>Geser halaman ke kiri atau kanan, atau pakai tombol panah, untuk berpindah halaman.</li>
+            <li>Ketuk tombol navigasi di tengah untuk memilih surat, juz, ayat, atau nomor halaman.</li>
+            <li>Pilih mode <b>Tutup</b> atau <b>Kata awal</b> untuk menguji hafalan; ketuk kata untuk membukanya.</li>
+            <li>Ketuk tanda akhir ayat untuk melihat terjemahan, memutar ayat, atau <b>Latih hafalan</b>.</li>
+            <li>Simpan penanda dan tandai halaman yang sudah hafal; lihat kemajuan di menu <b>Progres hafalan</b>.</li>
+          </ol>
+        </section>
+
+        <section class="about-section">
+          <h3 class="sub">Pintasan papan ketik</h3>
+          <dl class="kbd-list">
+            <div><dt><kbd>←</kbd> <kbd>→</kbd></dt><dd>Halaman berikutnya / sebelumnya</dd></div>
+            <div><dt><kbd>Spasi</kbd></dt><dd>Putar / jeda audio</dd></div>
+            <div><dt><kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd></dt><dd>Mode Normal / Tutup / Kata awal</dd></div>
+            <div><dt><kbd>B</kbd></dt><dd>Simpan penanda</dd></div>
+            <div><dt><kbd>M</kbd></dt><dd>Tandai halaman hafal</dd></div>
+            <div><dt><kbd>/</kbd></dt><dd>Buka navigasi</dd></div>
+            <div><dt><kbd>Esc</kbd></dt><dd>Tutup kartu ayat atau menu</dd></div>
+          </dl>
+        </section>
+
+        <section class="about-section">
+          <h3 class="sub">Sumber data</h3>
+          <ul class="about-list sumber-list">
+            <li>Teks dan font mushaf: QCF v4, Mushaf Madinah.</li>
+            <li>Peta halaman dan terjemahan Indonesia Kemenag: Quran.com API.</li>
+            <li>Audio murattal: EveryAyah.com.</li>
+          </ul>
+        </section>
+
+        <section class="about-section">
+          <h3 class="sub">Kurniapedia</h3>
+          <div class="about-social" aria-label="Media sosial Kurniapedia">
+            <a href="https://kurniapedia.my.id" target="_blank" rel="noopener noreferrer" aria-label="Website Kurniapedia (kurniapedia.my.id)"><svg class="ik" aria-hidden="true"><use href="#i-globe"/></svg><span>Website</span></a>
+            <a href="https://instagram.com/kurniapedia" target="_blank" rel="noopener noreferrer" aria-label="Instagram Kurniapedia"><svg class="ik" aria-hidden="true"><use href="#i-instagram"/></svg><span>Instagram</span></a>
+            <a href="https://tiktok.com/@kurniapedia" target="_blank" rel="noopener noreferrer" aria-label="TikTok Kurniapedia"><svg class="ik" aria-hidden="true"><use href="#i-tiktok"/></svg><span>TikTok</span></a>
+            <a href="https://wa.me/6285870906050" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp Kurniapedia"><svg class="ik" aria-hidden="true"><use href="#i-whatsapp"/></svg><span>WhatsApp</span></a>
+          </div>
+        </section>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- ============================================================
+       Dialog: Navigasi (surat · juz · ayat · halaman)
+       ============================================================ -->
   <dialog id="dlgNav" class="modal" aria-labelledby="navTitle">
     <div class="modal-box">
       <header class="modal-head">
@@ -270,6 +363,7 @@
         <button type="button" role="tab" id="tabSurat" aria-selected="true" aria-controls="panSurat">Surat</button>
         <button type="button" role="tab" id="tabJuz" aria-selected="false" aria-controls="panJuz" tabindex="-1">Juz</button>
         <button type="button" role="tab" id="tabAyat" aria-selected="false" aria-controls="panAyat" tabindex="-1">Ayat</button>
+        <button type="button" role="tab" id="tabHalaman" aria-selected="false" aria-controls="panHalaman" tabindex="-1">Halaman</button>
       </div>
       <div class="modal-body">
         <div id="panSurat" role="tabpanel" aria-labelledby="tabSurat">
@@ -289,11 +383,19 @@
           </div>
           <p class="catatan">Halaman ayat dicari lewat Quran.com API. Jika sedang luring, aplikasi membuka awal surat.</p>
         </div>
+        <div id="panHalaman" role="tabpanel" aria-labelledby="tabHalaman" hidden>
+          <div class="form-halaman">
+            <label>Nomor halaman (1–604) <input id="pageNo" type="number" min="1" max="604" value="1" inputmode="numeric"></label>
+            <button id="pageGo" type="button" class="btn-utama">Buka halaman</button>
+          </div>
+        </div>
       </div>
     </div>
   </dialog>
 
-  <!-- Dialog: Penanda -->
+  <!-- ============================================================
+       Dialog: Penanda
+       ============================================================ -->
   <dialog id="dlgBm" class="modal" aria-labelledby="bmTitle">
     <div class="modal-box">
       <header class="modal-head">
@@ -307,7 +409,9 @@
     </div>
   </dialog>
 
-  <!-- Dialog: Progres -->
+  <!-- ============================================================
+       Dialog: Progres hafalan
+       ============================================================ -->
   <dialog id="dlgPrg" class="modal" aria-labelledby="prgTitle">
     <div class="modal-box">
       <header class="modal-head">
@@ -326,7 +430,9 @@
     </div>
   </dialog>
 
-  <!-- Dialog: Pengaturan -->
+  <!-- ============================================================
+       Dialog: Pengaturan
+       ============================================================ -->
   <dialog id="dlgSet" class="modal" aria-labelledby="setTitle">
     <div class="modal-box">
       <header class="modal-head">
@@ -334,25 +440,32 @@
         <button class="icon-btn kecil" type="button" data-close aria-label="Tutup"><svg class="ik" aria-hidden="true"><use href="#i-x"/></svg></button>
       </header>
       <div class="modal-body set-body">
-        <fieldset class="grp">
-          <legend>Tema</legend>
-          <div class="radio-row">
-            <label><input type="radio" name="theme" value="auto"><span>Otomatis</span></label>
-            <label><input type="radio" name="theme" value="light"><span>Terang</span></label>
-            <label><input type="radio" name="theme" value="dark"><span>Gelap</span></label>
-            <label><input type="radio" name="theme" value="sepia"><span>Sepia</span></label>
+
+        <section class="set-card">
+          <h3 class="sub">Tampilan</h3>
+          <fieldset class="grp">
+            <legend>Tema warna</legend>
+            <div class="radio-row">
+              <label><input type="radio" name="theme" value="auto"><span>Otomatis</span></label>
+              <label><input type="radio" name="theme" value="light"><span>Terang</span></label>
+              <label><input type="radio" name="theme" value="dark"><span>Gelap</span></label>
+              <label><input type="radio" name="theme" value="sepia"><span>Sepia</span></label>
+            </div>
+          </fieldset>
+          <div class="grp">
+            <label class="row" for="setWidth"><span>Lebar halaman</span><output id="setWidthVal">700 px</output></label>
+            <input id="setWidth" type="range" min="480" max="960" step="20" value="700">
           </div>
-        </fieldset>
-        <div class="grp">
-          <label class="row" for="setWidth"><span>Lebar halaman</span><output id="setWidthVal">700 px</output></label>
-          <input id="setWidth" type="range" min="480" max="960" step="20" value="700">
-        </div>
-        <div class="grp">
+        </section>
+
+        <section class="set-card">
+          <h3 class="sub">Pembacaan</h3>
           <label class="check"><input id="setReveal" type="checkbox"><span>Buka ayat otomatis saat audio memutarnya <small>(pada mode Tutup / Kata awal)</small></span></label>
           <label class="check"><input id="setTrans" type="checkbox"><span>Tampilkan terjemahan Indonesia saat ayat dipilih</span></label>
           <label class="check"><input id="setWake" type="checkbox"><span>Jaga layar tetap menyala</span></label>
-        </div>
-        <div class="grp">
+        </section>
+
+        <section class="set-card">
           <h3 class="sub">Data</h3>
           <div class="btn-row">
             <button id="btnExport" type="button" class="btn"><svg class="ik" aria-hidden="true"><use href="#i-download"/></svg>Ekspor cadangan</button>
@@ -362,17 +475,19 @@
           </div>
           <input id="fileImport" type="file" accept="application/json,.json" hidden>
           <p class="catatan">Masuk dengan Google untuk menyinkronkan progres, penanda, dan pengaturan antar perangkat.</p>
-        </div>
-        <div class="grp sumber">
+        </section>
+
+        <section class="set-card sumber">
           <h3 class="sub">Sumber data</h3>
           <p class="catatan">Teks &amp; font: mushaf Madinah (QCF v4) · Peta ayat, halaman &amp; terjemahan Indonesia (Kemenag): Quran.com API · Audio: EveryAyah.com. Semua sumber gratis.</p>
-        </div>
+        </section>
       </div>
     </div>
   </dialog>
 
   <div id="toasts" role="status" aria-live="polite"></div>
 
-  <script src="app.js" defer></script>
+  <!-- Seluruh logika aplikasi dimulai dari js/main.js (ES module) -->
+  <script type="module" src="js/main.js"></script>
 </body>
 </html>

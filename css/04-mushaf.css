@@ -1,0 +1,113 @@
+/* ============================================================
+   04-mushaf.css — Halaman mushaf: bingkai, baris, kata, mode hafalan
+
+   Struktur yang dibuat oleh js/reader/renderer.js:
+     #teks
+       └ .baris            (satu baris mushaf; ada 15 per halaman)
+           └ .kata         (satu kata; font QCF khusus per halaman)
+       └ .baris.header     (banner nama surat)
+       └ .baris.basmalah   (baris Bismillah)
+
+   Kelas status pada .kata:
+     .is-end   tanda akhir ayat (bisa diketuk)     .is-first  kata pertama ayat
+     .terbuka  kata yang sudah dibuka pengguna     .sel       ayat terpilih
+     .putar    ayat yang sedang diputar audio
+   ============================================================ */
+
+/* ------------------------------------------------------------ bingkai halaman */
+#wrap { padding: 0 12px; }
+
+.frame {
+  position: relative; display: flex; flex-direction: column; aspect-ratio: 5 / 8;
+  max-width: var(--w); margin: 0 auto; padding: 34px var(--pad-x) 30px;
+  background: var(--kaca); border: 1px solid var(--tepi-aksen); border-radius: 10px;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, .18);
+  user-select: none; -webkit-user-select: none; touch-action: pan-y;
+  overflow: clip;   /* jaring pengaman: teks tidak pernah meluber keluar bingkai */
+}
+.frame::before {   /* garis bingkai dalam */
+  content: ""; position: absolute; inset: 8px; border: 1px solid var(--tepi); border-radius: 6px; pointer-events: none;
+}
+html[data-theme="sepia"] .frame {
+  background: linear-gradient(90deg, rgba(94, 72, 48, .045), transparent 8%, transparent 92%, rgba(94, 72, 48, .045)), var(--kaca);
+  box-shadow: 0 14px 34px rgba(58, 48, 34, .2), inset 0 0 48px rgba(111, 88, 55, .045);
+}
+html[data-theme="sepia"] .frame::before { inset: 10px; border-color: rgba(91, 82, 61, .24); }
+
+/* Hiasan sudut (satu gambar dicerminkan ke empat sudut) */
+.corner { position: absolute; width: 22px; height: 22px; color: var(--aksen); opacity: .58; pointer-events: none; }
+.c1 { top: 4px; left: 4px; }
+.c2 { top: 4px; right: 4px; transform: scaleX(-1); }
+.c3 { bottom: 4px; left: 4px; transform: scaleY(-1); }
+.c4 { bottom: 4px; right: 4px; transform: scale(-1, -1); }
+
+/* Kepala (nama surat · juz) dan kaki (nomor halaman) */
+#kepala {
+  flex: none; display: flex; justify-content: space-between; gap: var(--sp-3); margin: 0 4px 10px;
+  font-size: .65rem; font-weight: 600; letter-spacing: .18em; text-transform: uppercase; color: var(--teks-lembut);
+}
+#kaki { flex: none; text-align: center; margin-top: 14px; }
+#kaki span {
+  display: inline-block; min-width: 52px; padding: 3px 14px;
+  border: 1px solid var(--tepi-aksen); border-radius: var(--r-pill); background: var(--kaca-halus);
+  font-size: .82rem; font-weight: 600; color: var(--teks-lembut); transition: all .2s;
+}
+#kaki.hafal span { border-color: var(--ok); color: var(--ok); }
+#kaki.hafal span::after { content: " ✓"; }
+
+/* ------------------------------------------------------------ area teks */
+#teks {
+  --fs: 30px;      /* ukuran font; dihitung otomatis oleh reader/fit.js */
+  --pitch: 2.2;    /* tinggi baris = --fs × --pitch */
+  position: relative; display: flex; flex: 1; flex-direction: column; justify-content: center; min-height: 0;
+  transition: opacity .15s ease;
+}
+#teks:focus { outline: none; }
+#teks.memuat { opacity: .3; }
+#teks.memuat::after {   /* indikator memuat */
+  content: ""; position: absolute; left: 50%; top: 50%; width: 30px; height: 30px; margin: -15px 0 0 -15px;
+  border: 3px solid var(--tepi-aksen); border-top-color: var(--aksen); border-radius: 50%;
+  animation: putar .8s linear infinite;
+}
+@keyframes putar { to { transform: rotate(360deg); } }
+
+/* ------------------------------------------------------------ baris & kata */
+.baris {
+  display: flex; flex: none; direction: rtl; align-items: center; justify-content: space-between; gap: .12em;
+  height: calc(var(--fs) * var(--pitch)); font-size: var(--fs); color: var(--teks);
+  margin-inline: auto; white-space: nowrap;
+  background: linear-gradient(90deg, transparent, var(--garis-baris) 8%, var(--garis-baris) 92%, transparent) bottom / 100% 1px no-repeat;
+}
+.baris:last-child { background: none; }
+.baris.header { background: none; justify-content: center; }
+.baris.basmalah { justify-content: center; gap: .3em; }
+.baris.pendek { justify-content: flex-start; }                         /* baris pendek: rata kanan */
+#teks.rata-tengah .baris:not(.header) { justify-content: center; }     /* halaman 1–2: rata tengah */
+
+/* Banner nama surat */
+.banner {
+  position: relative; width: 100%; height: 76%; display: grid; place-items: center; border-radius: var(--r-md);
+  font-family: var(--f-arab); font-size: calc(var(--fs) * .8); font-weight: 600; color: #fff;
+  background: var(--banner-grad); box-shadow: var(--banner-shadow);
+}
+.banner span { white-space: nowrap; padding: 0 8%; }
+
+.kata {
+  flex: none; line-height: normal; position: relative; z-index: 1; cursor: pointer; border-radius: var(--r-sm);
+  transition: filter .15s ease, opacity .15s ease, background-color .2s ease;
+}
+/* Ayat terpilih / sedang diputar: warna oranye agar kontras dengan ayat lain */
+.kata.sel, .kata.putar, .kata.sel.putar { color: var(--sel-teks); }
+.kata.is-end:focus-visible { outline-offset: 0; }
+
+/* Mode hafalan: kata dikaburkan sampai diketuk */
+.m-blur .kata:not(.is-end):not(.terbuka),
+.m-first .kata:not(.is-end):not(.is-first):not(.terbuka) { filter: blur(7px); opacity: .15; }
+
+/* Pesan galat (gagal memuat halaman) */
+.galat { display: grid; place-items: center; align-content: center; gap: 10px; text-align: center; padding: 40px 16px; direction: ltr; font-family: var(--f-ui); }
+.galat p { margin: 0; font-size: .85rem; color: var(--redup); max-width: 32ch; }
+.galat button {
+  display: inline-flex; align-items: center; gap: var(--sp-2); padding: 9px 18px; border: 0;
+  border-radius: var(--r-pill); background: var(--g1); color: #fff; font-size: .8rem; font-weight: 600;
+}

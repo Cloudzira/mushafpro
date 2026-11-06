@@ -1,0 +1,155 @@
+/* ============================================================
+   01-tokens.css — Variabel desain (warna, ukuran, bayangan)
+   Seluruh tampilan memakai variabel di sini. Mau ubah warna atau jarak?
+   Cukup ubah di file ini.
+
+   Tema diatur lewat atribut data-theme pada <html>:
+     (tanpa atribut / "light") → terang · "dark" → gelap · "sepia" → sepia
+   ============================================================ */
+
+/* ---------- Token umum (sama untuk semua tema) ---------- */
+:root {
+  /* Jarak */
+  --sp-1: 4px;  --sp-2: 8px;  --sp-3: 12px;  --sp-4: 16px;  --sp-5: 24px;
+
+  /* Sudut membulat */
+  --r-sm: 8px;  --r-md: 12px;  --r-lg: 18px;  --r-pill: 999px;
+
+  /* Ukuran huruf antarmuka */
+  --fs-xs: .7rem;  --fs-sm: .78rem;  --fs-md: .86rem;  --fs-lg: 1rem;
+
+  /* Lapisan (semakin besar semakin di depan) */
+  --z-bar: 800;  --z-toolbar: 820;  --z-menu: 850;  --z-sheet: 880;
+  --z-player: 900;  --z-toast: 1500;  --z-splash: 2000;
+
+  /* Gerak */
+  --ease: cubic-bezier(.2, .7, .2, 1);
+  --t-fast: .15s;
+
+  /* Target sentuh minimal untuk layar sentuh */
+  --tap: 44px;
+}
+
+/* ---------- Warna & tata letak per tema ---------- */
+:root {
+  --f-ui: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --f-arab: "Reem Kufi", "Traditional Arabic", serif;
+  --w: 700px;
+  --player-h: 64px;
+  --pad-x: 48px;
+
+  /* terang */
+  color-scheme: light;
+  --g1: #806b50;
+  --g2: #6c5943;
+  --aksen: #8a7355;
+  --on-aksen: #fff;
+  --teks: #2d2b26;
+  --teks-lembut: #625b4f;
+  --redup: rgba(98, 91, 79, .88);
+  --kaca: rgba(250, 249, 246, .96);
+  --kaca-halus: rgba(45, 43, 38, .035);
+  --tepi: rgba(87, 78, 63, .12);
+  --tepi-aksen: rgba(138, 115, 85, .28);
+  --garis-baris: rgba(138, 115, 85, .13);
+  --latar: linear-gradient(135deg, #f1f0eb 0%, #f7f6f2 52%, #eeede7 100%);
+  --latar-solid: #f3f2ed;
+  --bayang: 0 10px 28px rgba(35, 32, 26, .08);
+  --grad-judul: linear-gradient(90deg, #61523f, #887452, #a58c6b);
+  --sorot-putar: rgba(138, 115, 85, .28);
+  --putar-teks: #8e5d3c;
+  --sel-teks: #e8590c;
+  --glow-aksen: rgba(138, 115, 85, .26);
+  --banner-grad: linear-gradient(105deg, #756345, #53634d);
+  --banner-shadow: 0 4px 16px rgba(76, 83, 60, .2);
+  --toast-bg: #312d27;
+  --toast-fg: #f4efe4;
+  --toast-action: #d2ba8c;
+  --modal-bg: #faf9f6;
+  --sorot-pilih: rgba(138, 115, 85, .16);
+  --ok: #47745a;
+  --bahaya: #b45f5c;
+  --opt-bg: #f7f5ef;
+  --opt-fg: #2d2b26;
+  --footer-muted: #77736a;
+  --footer-heart: #b36f73;
+  --footer-author: #71846e;
+  --footer-glow: rgba(113, 132, 110, .18);
+  --splash-grid: rgba(138, 115, 85, .07);
+}
+
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --teks: #e8e5df;
+  --teks-lembut: #c8bea8;
+  --redup: rgba(200, 190, 168, .8);
+  --kaca: rgba(35, 34, 31, .96);
+  --kaca-halus: rgba(255, 255, 255, .045);
+  --tepi: rgba(218, 209, 187, .1);
+  --tepi-aksen: rgba(190, 167, 126, .24);
+  --garis-baris: rgba(190, 167, 126, .11);
+  --aksen: #c4aa7e;
+  --g1: #796544;
+  --g2: #566249;
+  --latar: linear-gradient(135deg, #22211e 0%, #191816 52%, #24221e 100%);
+  --latar-solid: #191816;
+  --bayang: 0 12px 32px rgba(0, 0, 0, .3);
+  --grad-judul: linear-gradient(90deg, #ded1b3, #c6ad7e, #a88e65);
+  --sorot-putar: rgba(196, 170, 126, .3);
+  --putar-teks: #d0b47a;
+  --sel-teks: #ffa94d;
+  --glow-aksen: rgba(196, 170, 126, .26);
+  --banner-grad: linear-gradient(105deg, #796544, #4b5c46);
+  --banner-shadow: 0 4px 16px rgba(196, 170, 126, .18);
+  --toast-bg: #eee2c6;
+  --toast-fg: #2a2720;
+  --toast-action: #765a38;
+  --modal-bg: #24221e;
+  --sorot-pilih: rgba(196, 170, 126, .18);
+  --ok: #83ae8d;
+  --bahaya: #d18b87;
+  --opt-bg: #2d2b26;
+  --opt-fg: #e8e5df;
+  --footer-muted: #aaa69c;
+  --footer-heart: #cf8793;
+  --footer-author: #9bb9a2;
+  --footer-glow: rgba(155, 185, 162, .2);
+  --splash-grid: rgba(196, 170, 126, .055);
+}
+
+html[data-theme="sepia"] {
+  color-scheme: light;
+  --teks: #39362e;
+  --teks-lembut: #5f604d;
+  --redup: rgba(89, 83, 67, .88);
+  --kaca: #f8f1df;
+  --kaca-halus: rgba(74, 86, 62, .055);
+  --tepi: rgba(91, 82, 61, .2);
+  --tepi-aksen: rgba(112, 79, 61, .34);
+  --garis-baris: rgba(78, 91, 67, .17);
+  --aksen: #715344;
+  --g1: #704b3e;
+  --g2: #4f5d48;
+  --latar: linear-gradient(90deg, #d5cbb7 0%, #e9dfca 15%, #f2e9d7 50%, #e2d7c1 100%);
+  --latar-solid: #e5dac5;
+  --bayang: 0 14px 34px rgba(58, 48, 34, .17);
+  --grad-judul: linear-gradient(90deg, #4f6048, #795144, #5d513a);
+  --sorot-putar: rgba(139, 118, 84, .28);
+  --putar-teks: #875540;
+  --sel-teks: #d9480f;
+  --glow-aksen: rgba(112, 79, 61, .26);
+  --banner-grad: linear-gradient(105deg, #536047, #754c40);
+  --banner-shadow: 0 4px 14px rgba(74, 61, 43, .2);
+  --toast-bg: #544a3b;
+  --toast-fg: #f8f1df;
+  --toast-action: #d8ba82;
+  --modal-bg: #f8f1df;
+  --sorot-pilih: rgba(139, 118, 84, .17);
+  --opt-bg: #f5f1e7;
+  --opt-fg: #3b382f;
+  --footer-muted: #817b6d;
+  --footer-heart: #a87576;
+  --footer-author: #6d8068;
+  --footer-glow: rgba(109, 128, 104, .16);
+  --splash-grid: rgba(139, 118, 84, .07);
+}

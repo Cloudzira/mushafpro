@@ -1,0 +1,69 @@
+/* ============================================================
+   02-base.css — Dasar: reset, tipografi, aksesibilitas, ikon
+   ============================================================ */
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+[hidden] { display: none !important; }
+
+html {
+  background: var(--latar-solid);
+  scroll-behavior: smooth;
+  scrollbar-gutter: stable;
+  overflow-x: hidden;               /* halaman tidak pernah bisa digeser ke kiri-kanan */
+  overscroll-behavior-x: none;      /* cegah gestur "kembali" trackpad / geser horizontal */
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
+  color: var(--teks);
+  font-family: var(--f-ui);
+  font-weight: 400;
+  background: var(--latar);
+  background-attachment: fixed;
+  overscroll-behavior-x: none;
+  /* ruang di bawah agar konten tidak tertutup pemutar audio & kartu ayat */
+  padding-bottom: calc(var(--player-h) + 28px + var(--sheet-extra, 0px) + env(safe-area-inset-bottom));
+  transition: color .2s ease, background .2s ease;
+}
+
+button, input, select { font-family: inherit; color: inherit; }
+button { cursor: pointer; }
+button:disabled { cursor: not-allowed; }
+
+/* Cincin fokus yang jelas untuk pengguna papan ketik */
+:focus-visible { outline: 2px solid var(--aksen); outline-offset: 2px; border-radius: 6px; }
+
+/* ---------- Aksesibilitas ---------- */
+
+/* Teks hanya untuk pembaca layar */
+.sr {
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip: rect(0 0 0 0); white-space: nowrap;
+}
+
+/* "Lewati ke teks mushaf" — muncul saat ditekan Tab */
+.skip {
+  position: absolute; left: 12px; top: -60px; z-index: var(--z-splash);
+  padding: 8px 14px; border-radius: var(--r-sm);
+  background: var(--g1); color: #fff; font-size: var(--fs-sm); text-decoration: none;
+}
+.skip:focus { top: 10px; }
+
+.noscript { margin: 0; padding: 16px; text-align: center; font-size: var(--fs-md); background: var(--kaca); color: var(--teks); }
+
+/* ---------- Ikon (sprite SVG) ---------- */
+svg.ik {
+  width: 18px; height: 18px; flex: none;
+  fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+svg.ik.f { fill: currentColor; }   /* ikon terisi penuh (putar, stop) */
+
+/* ---------- Tombol papan ketik (kbd) ---------- */
+kbd {
+  display: inline-block; min-width: 24px; padding: 2px 7px; text-align: center;
+  font: 600 .7rem/1.4 var(--f-ui); color: var(--teks-lembut);
+  background: var(--kaca-halus); border: 1px solid var(--tepi-aksen); border-bottom-width: 2px; border-radius: 6px;
+}
