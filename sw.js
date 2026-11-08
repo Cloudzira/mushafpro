@@ -12,7 +12,7 @@
  * PENTING: bila menambah/menghapus berkas CSS atau JS, perbarui daftar SHELL
  * di bawah dan naikkan VERSION agar cache lama dibersihkan.
  */
-const VERSION = "v9";
+const VERSION = "v10";
 const SHELL_CACHE = "mushaf-shell-" + VERSION;
 const DATA_CACHE = "mushaf-data-" + VERSION;
 
